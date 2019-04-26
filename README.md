@@ -1,8 +1,12 @@
 # 目次　_Table of contents_
+* [Screenshots](#screenshots)
+* [Installation](#installation)
+* [Warning](#warning)
+* [Properties](#properties)
 
-# スクリーンショット　 _Screenshots_
+# <a id="screenshots"></a>スクリーンショット　 _Screenshots_
 
-# インストール方法　_Installation_
+# <a id="installation"></a>インストール方法　_Installation_
 
 ## CocoaPods
 
@@ -86,7 +90,7 @@ self.countDownLabel = countDownLabel
 
 > SKCountDownLabel is coded in Swift4.0.
 
-# 注意　Warning
+# <a id="warning"></a>注意　Warning
 オートレイアウトで設定しないと表示が変になります。  
 きちんとオートレイアウトを設定してください。  
 
@@ -94,7 +98,7 @@ self.countDownLabel = countDownLabel
 
 Please set SKCountDownLabel's Autolayout appropriately, or the Label is got out of shape.  
 
-# プロパティ　Properties
+# <a id="properties"></a>プロパティ　Properties
 
 ## timeStyle
 表示する時間の形式を変えられます  
