@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        self.countDownLabel.setDeadline(deadline: SKDateFormat.createTime(string: "2019/09/01 00:00:00", identifier: "ja_JP"))
+        self.countDownLabel.setDeadline(deadline: SKDateFormat.createTime(string: "2019/05/01 00:00:00", identifier: "ja_JP"), style: .full)
     }
 
 
