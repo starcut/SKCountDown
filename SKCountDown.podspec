@@ -2,7 +2,7 @@ Pod::Spec.new do |spec|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   spec.name         = "SKCountDown"
-  spec.version      = "0.0.1"
+  spec.version      = "0.1.0"
   spec.summary      = "SKCountDown displays countdown"
 
   # spec.description  = <<-DESC
