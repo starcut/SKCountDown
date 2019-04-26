@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
   # spec.tvos.deployment_target = "9.0"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.source       = { :git => "https://github.com/starcut/SKCountDown.git", :branch => 'master' :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/starcut/SKCountDown.git", :branch => 'master', :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
