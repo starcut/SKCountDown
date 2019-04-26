@@ -10,7 +10,8 @@ import UIKit
 
 /** 表示する時間のスタイル */
 public enum TimeStyle: UInt {
-    case milliSecond = 0    /** 残り時間を秒単位で表示する（ミリ秒まで） */
+    case defaultStyle = 0   /** 残り時間を年数から秒までそれぞれの単位に分けて表示する */
+    case milliSecond        /** 残り時間を秒単位で表示する（ミリ秒まで） */
     case second             /** 残り時間を秒単位で表示する（ミリ秒以下切り捨て） */
     case minute             /** 残り時間を分単位で表示する（秒以下切り捨て） */
     case hour               /** 残り時間を時間単位で表示する（分以下切り捨て） */
@@ -18,12 +19,13 @@ public enum TimeStyle: UInt {
     case month              /** 残り月数を表示する（日数以下切り捨て） */
     case year               /** 残り年数を表示する（月数以下切り捨て） */
     case full               /** 残り時間を年数からミリ秒までそれぞれの単位を分けて表示する */
-    case defaultStyle       /** 残り時間を年数から秒までそれぞれの単位に分けて表示する */
 }
 
 open class SKCountDownLabel: UILabel {
     /** 時間の表示形式 */
     open var timeStyle: TimeStyle = .defaultStyle
+    /** 期日が来た時に表示する文字列 */
+    open var timeupString: String! = "時間切れ"
     /** 年の文字列のフォーマット */
     fileprivate let STRING_FORMAT_YEAR: String = "%d年"
     /** 月の文字列のフォーマット */
@@ -38,12 +40,12 @@ open class SKCountDownLabel: UILabel {
     fileprivate let STRING_FORMAT_SECONT: String = "%02d秒"
     /** ミリ秒の文字列のフォーマット */
     fileprivate let STRING_FORMAT_MILLISECOND: String = "%02d.%03d秒"
+    /** 表示する時間のタイムインターバル */
+    fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** 期日 */
     fileprivate var deadline: Date = Date()
     /** タイマー */
     fileprivate var timer: Timer!
-    /** 期日が来た時に表示する文字列 */
-    fileprivate var timeupString: String! = "時間切れ"
     
     // MARK: Override Method
     
@@ -81,8 +83,7 @@ open class SKCountDownLabel: UILabel {
     public func setDeadline(deadline: Date, style: TimeStyle) {
         self.deadline = deadline
         self.timeStyle = style
-        self.setRemainingTime()
-        self.timer = Timer.scheduledTimer(timeInterval: 0.001,
+        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                           target: self,
                                           selector: #selector(setRemainingTime),
                                           userInfo: nil,

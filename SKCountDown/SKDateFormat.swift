@@ -33,7 +33,7 @@ open class SKDateFormat: NSObject {
      *   - identifier:  地域の識別子
      * - Returns:       dateの時間を格納したDate型オブジェクト
      */
-    public static func createTime(string: String, identifier: String) -> Date {
+    public static func createDateTimeByString(string: String, identifier: String) -> Date {
         let formatter:DateFormatter = DateFormatter()
         formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm",
                                                         options: 0,

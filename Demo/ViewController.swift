@@ -15,7 +15,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.countDownLabel.setDeadline(deadline: SKDateFormat.createTime(string: "2020/3/21 15:18", identifier: "ja_JP"), style: .full)
+        self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: "2019/4/26 18:21",
+                                                                                      identifier: "ja_JP"),
+                                        style: .full)
+        self.countDownLabel.timeupString = "お疲れ様でした"
     }
 
     @IBAction fileprivate func changeTimeStyle(button: UIButton) {
