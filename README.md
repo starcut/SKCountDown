@@ -1,6 +1,7 @@
 # 目次　_Table of contents_
 * [Screenshots](#screenshots)
 * [Installation](#installation)
+* [Setup](#setup)
 * [Warning](#warning)
 * [Properties](#properties)
 
@@ -29,7 +30,7 @@ target '<Tour target Name>' do
 end
 ```
 
-# Setup
+# <a id="setup"></a>Setup
 
 ## storyboardなど、IBを使う場合　_Use Interface Builder_
 1. ViewControllerにUILabelをドラッグします
