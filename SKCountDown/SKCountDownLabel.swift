@@ -90,7 +90,7 @@ open class SKCountDownLabel: UILabel {
         )
     }
     
-    // MARK: FilePrivateMethod
+    // MARK: File Private Method
     
     /**
      * 共通の初期化事項
