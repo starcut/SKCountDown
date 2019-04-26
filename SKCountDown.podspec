@@ -2,7 +2,7 @@ Pod::Spec.new do |spec|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   spec.name         = "SKCountDown"
-  spec.version      = "0.1.0"
+  spec.version      = "1.1.0"
   spec.summary      = "SKCountDown displays countdown"
 
   # spec.description  = <<-DESC
@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
   # spec.tvos.deployment_target = "9.0"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.source       = { :git => "https://github.com/starcut/SKCountDown.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/starcut/SKCountDown.git", :branch => 'master' :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
