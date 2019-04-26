@@ -57,6 +57,14 @@ open class SKCountDownLabel: UILabel {
     fileprivate func commonInit() {
         self.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: self.font.pointSize)!
         self.adjustsFontSizeToFitWidth = true
+        
+        self.addObserver(self, forKeyPath: "timeStyle", options: [.new], context: nil)
+    }
+    
+    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "timeStyle" {
+            self.text = self.setRemainingTime(deadline: self.deadline)
+        }
     }
     
     public func setDeadline(deadline: Date, style: TimeStyle) {
@@ -94,17 +102,13 @@ open class SKCountDownLabel: UILabel {
         case .milliSecond:
             return String(format: "%.3f秒", remainingMilliSecond)
         case .second:
-            let second: Int = Int(floor(remainingMilliSecond))
-            return String(format: "%d秒", remainingDateComponents.second ?? second)
+            return String(format: "%d秒", Int(floor(remainingMilliSecond)))
         case .minute:
-            let minute: Int = Int(floor(remainingMilliSecond) / 60)
-            return String(format: "%d分", remainingDateComponents.minute ?? minute)
+            return String(format: "%d分", Int(floor(remainingMilliSecond) / 60))
         case .hour:
-            let hour: Int = Int(floor(remainingMilliSecond) / 3600)
-            return String(format: "%d時間", remainingDateComponents.hour ?? hour)
+            return String(format: "%d時間", Int(floor(remainingMilliSecond) / 3600))
         case .day:
-            let day: Int = Int(floor(remainingMilliSecond) / (3600 * 24))
-            return String(format: "%d日", remainingDateComponents.day ?? day)
+            return String(format: "%d日", Int(floor(remainingMilliSecond) / (3600 * 24)))
         case .month:
             return String(format: "%dヶ月", remainingDateComponents.month!)
         case .year:
