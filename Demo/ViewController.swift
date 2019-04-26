@@ -14,9 +14,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
-        self.countDownLabel.setDeadline(deadline: SKDateFormat.createTime(string: "2019/05/01 00:00:00", identifier: "ja_JP"), style: .full)
+        self.countDownLabel.setDeadline(deadline: SKDateFormat.createTime(string: "2020/3/21 15:18", identifier: "ja_JP"), style: .full)
     }
 
     @IBAction fileprivate func changeTimeStyle(button: UIButton) {
