@@ -9,20 +9,99 @@
 import UIKit
 import SKCountDown
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+    fileprivate var timeItem: [[Int]] = [[],[],[]]
+    
+    fileprivate let HOUR_MAX: Int = 24
+    fileprivate let MINUTE_MAX: Int = 60
+    fileprivate let SECOND_MAX: Int = 60
+    
+    fileprivate var selectedHour: Int = 0
+    fileprivate var selectedMinute: Int = 0
+    fileprivate var selectedSecond: Int = 0
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 3
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.timeItem[component].count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return String(format: "%02d", self.timeItem[component][row])
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch component {
+        case 0:
+            self.selectedHour = self.timeItem[component][row]
+            break
+        case 1:
+            self.selectedMinute = self.timeItem[component][row]
+            break
+        case 2:
+            self.selectedSecond = self.timeItem[component][row]
+            break
+        default:
+            break
+        }
+    }
+    
     @IBOutlet private weak var countDownLabel: SKCountDownLabel!
-    @IBOutlet private weak var picker: UIDatePicker!
+    @IBOutlet private weak var datePicker: UIDatePicker!
+    @IBOutlet private weak var countDownPicker: UIPickerView!
+    @IBOutlet private weak var segmentControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.countDownPicker.delegate = self
+        self.countDownPicker.dataSource = self
+        
+        for hour in 0 ..< HOUR_MAX {
+            self.timeItem[0].append(hour)
+        }
+        for minute in 0 ..< MINUTE_MAX {
+            self.timeItem[1].append(minute)
+        }
+        for second in 0 ..< SECOND_MAX {
+            self.timeItem[2].append(second)
+        }
     }
     
     @IBAction fileprivate func start() {
-        let date: String = SKDateFormat.createDateTimeString(date: self.picker.date, identifier: "ja_JP")
-        self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: date,
-                                                                                      identifier: "ja_JP"),
-                                        style: .full)
+        if self.segmentControl.selectedSegmentIndex == 0 {
+            let date: String = SKDateFormat.createDateTimeString(date: self.datePicker.date,
+                                                                 identifier: "ja_JP")
+            self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: date,
+                                                                                          identifier: "ja_JP"),
+                                            style: .full)
+        } else {
+            let addSercond: Int = (selectedHour*HOUR_MAX*SECOND_MAX) + (selectedMinute*SECOND_MAX) + selectedSecond
+            let deadline: Date = .init(timeInterval: TimeInterval(addSercond),
+                                       since: .init())
+            let deadlineString: String = SKDateFormat.createDateTimeString(date: deadline,
+                                                                           identifier: "ja_JP")
+            self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: deadlineString,
+                                                                                          identifier: "ja_JP"),
+                                            style: .full)
+        }
+        
         self.countDownLabel.timeupString = "お疲れ様でした"
+    }
+    
+    @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {
+        switch segmentControl.selectedSegmentIndex {
+        case 0:
+            self.datePicker.isHidden = false
+            self.countDownPicker.isHidden = true
+        case 1:
+            self.datePicker.isHidden = true
+            self.countDownPicker.isHidden = false
+        default:
+            break
+        }
     }
     
     @IBAction fileprivate func changeTimeStyle(button: UIButton) {

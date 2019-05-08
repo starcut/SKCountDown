@@ -18,6 +18,39 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kvy-az-ve3">
+                                <rect key="frame" x="0.0" y="103" width="414" height="216"/>
+                                <subviews>
+                                    <pickerView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x0q-Zk-1oj">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                                    </pickerView>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="fa0-xB-jx9">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="216"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="578996799.62932205">
+                                            <!--2019-05-08 08:26:39 +0000-->
+                                        </date>
+                                        <locale key="locale" localeIdentifier="ja_JP"/>
+                                    </datePicker>
+                                </subviews>
+                            </stackView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="WWw-Ed-gdE">
+                                <rect key="frame" x="138.5" y="337" width="137" height="29"/>
+                                <segments>
+                                    <segment title="日付指定"/>
+                                    <segment title="タイマー"/>
+                                </segments>
+                                <connections>
+                                    <action selector="changeModeWithSegmentControl:" destination="BYZ-38-t0r" eventType="valueChanged" id="9iV-Q8-1ha"/>
+                                </connections>
+                            </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2D-xS-XL6">
+                                <rect key="frame" x="40" y="383" width="334" height="30"/>
+                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="start"/>
+                                <connections>
+                                    <action selector="start" destination="BYZ-38-t0r" eventType="touchUpInside" id="0ht-db-LdD"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lRP-9A-Vbv" customClass="SKCountDownLabel" customModule="Demo" customModuleProvider="target">
                                 <rect key="frame" x="186" y="438" width="42" height="20.5"/>
                                 <attributedString key="attributedText">
@@ -139,30 +172,17 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2D-xS-XL6">
-                                <rect key="frame" x="40" y="341" width="334" height="30"/>
-                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="start"/>
-                                <connections>
-                                    <action selector="start" destination="BYZ-38-t0r" eventType="touchUpInside" id="tHE-n3-lED"/>
-                                </connections>
-                            </button>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="fa0-xB-jx9">
-                                <rect key="frame" x="0.0" y="101" width="414" height="216"/>
-                                <date key="date" timeIntervalSinceReferenceDate="578996799.62932205">
-                                    <!--2019-05-08 08:26:39 +0000-->
-                                </date>
-                                <locale key="locale" localeIdentifier="ja_JP"/>
-                            </datePicker>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="fa0-xB-jx9" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="5AS-II-oek"/>
-                            <constraint firstItem="f2D-xS-XL6" firstAttribute="top" secondItem="fa0-xB-jx9" secondAttribute="bottom" constant="24" id="I0R-1k-KWL"/>
+                            <constraint firstItem="kvy-az-ve3" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4Bq-1v-P6q"/>
+                            <constraint firstItem="f2D-xS-XL6" firstAttribute="top" secondItem="WWw-Ed-gdE" secondAttribute="bottom" constant="18" id="CaH-rf-duf"/>
+                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="top" secondItem="kvy-az-ve3" secondAttribute="bottom" constant="18" id="CeJ-u9-Asq"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f2D-xS-XL6" secondAttribute="trailing" constant="40" id="IjT-1x-NkN"/>
-                            <constraint firstItem="fa0-xB-jx9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Sny-8K-n8H"/>
+                            <constraint firstItem="lRP-9A-Vbv" firstAttribute="top" secondItem="f2D-xS-XL6" secondAttribute="bottom" constant="25" id="Seq-L0-QnP"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WI1-gV-9C2"/>
-                            <constraint firstItem="lRP-9A-Vbv" firstAttribute="top" secondItem="f2D-xS-XL6" secondAttribute="bottom" constant="67" id="ZJA-Vh-4AE"/>
+                            <constraint firstItem="kvy-az-ve3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="bck-ii-ya5"/>
+                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="e4k-Wg-zMC"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="h8C-IP-PhK"/>
                             <constraint firstItem="ih6-X9-Cc9" firstAttribute="top" secondItem="lRP-9A-Vbv" secondAttribute="bottom" constant="16" id="m40-5o-zPE"/>
                             <constraint firstItem="ih6-X9-Cc9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mGa-1s-C7l"/>
@@ -173,7 +193,9 @@
                     </view>
                     <connections>
                         <outlet property="countDownLabel" destination="lRP-9A-Vbv" id="eKI-Ug-Olj"/>
-                        <outlet property="picker" destination="fa0-xB-jx9" id="Wvw-C1-CNb"/>
+                        <outlet property="countDownPicker" destination="x0q-Zk-1oj" id="gBM-gw-eZt"/>
+                        <outlet property="datePicker" destination="fa0-xB-jx9" id="Khc-xp-RbE"/>
+                        <outlet property="segmentControl" destination="WWw-Ed-gdE" id="nks-NG-VrP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
