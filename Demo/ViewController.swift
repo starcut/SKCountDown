@@ -11,16 +11,20 @@ import SKCountDown
 
 class ViewController: UIViewController {
     @IBOutlet private weak var countDownLabel: SKCountDownLabel!
+    @IBOutlet private weak var picker: UIDatePicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: "2019/4/26 18:21",
+    }
+    
+    @IBAction fileprivate func start() {
+        let date: String = SKDateFormat.createDateTimeString(date: self.picker.date, identifier: "ja_JP")
+        self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: date,
                                                                                       identifier: "ja_JP"),
                                         style: .full)
         self.countDownLabel.timeupString = "お疲れ様でした"
     }
-
+    
     @IBAction fileprivate func changeTimeStyle(button: UIButton) {
         switch button.tag {
         case 1:
