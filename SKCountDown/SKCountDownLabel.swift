@@ -25,7 +25,7 @@ open class SKCountDownLabel: UILabel {
     /** 時間の表示形式 */
     open var timeStyle: TimeStyle = .defaultStyle
     /** 期日が来た時に表示する文字列 */
-    open var timeupString: String! = "時間切れ"
+    open var timeupString: String = "時間切れ"
     /** 期日が近いと判定される残り時間 */
     open var deadlineNearTime: Double = 0
     /** 年の文字列のフォーマット */
@@ -45,14 +45,15 @@ open class SKCountDownLabel: UILabel {
     /** 表示する時間のタイムインターバル */
     fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** 期日 */
-    fileprivate var deadline: Date = Date()
+    fileprivate var deadline: Date = .init()
     /** タイマー */
     fileprivate var timer: Timer!
     /** 残り時間 */
     fileprivate var milliSecond: Double = 0
     
+    // -------------------------------------------------------
     // MARK: Override Method
-    
+    // -------------------------------------------------------
     override public init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -68,15 +69,19 @@ open class SKCountDownLabel: UILabel {
     /**
      * 指定された値が変更された時に呼ばれる処理
      */
-    override open func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override open func observeValue(forKeyPath keyPath: String?,
+                                    of object: Any?,
+                                    change: [NSKeyValueChangeKey : Any]?,
+                                    context: UnsafeMutableRawPointer?) {
         // 表示時間のスタイルが変更されたらスタイルを変更して再表示を行う
         if keyPath == "timeStyle" {
             self.setRemainingTime()
         }
     }
     
+    // -------------------------------------------------------
     // MARK: Public Method
-    
+    // -------------------------------------------------------
     /**
      * 日時指定形式での期日設定
      *
@@ -130,8 +135,9 @@ open class SKCountDownLabel: UILabel {
         return self.milliSecond
     }
     
+    // -------------------------------------------------------
     // MARK: File Private Method
-    
+    // -------------------------------------------------------
     /**
      * 共通の初期化事項
      */
@@ -200,28 +206,28 @@ open class SKCountDownLabel: UILabel {
             break
         case .minute:
             self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
-                                               timeStyle: .minute,
-                                               milliSecond: self.milliSecond)
+                                                    timeStyle: .minute,
+                                                    milliSecond: self.milliSecond)
             break
         case .hour:
             self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 3600),
-                                               timeStyle: .hour,
-                                               milliSecond: self.milliSecond)
+                                                    timeStyle: .hour,
+                                                    milliSecond: self.milliSecond)
             break
         case .day:
             self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / (3600 * 24)),
-                                               timeStyle: .day,
-                                               milliSecond: self.milliSecond)
+                                                    timeStyle: .day,
+                                                    milliSecond: self.milliSecond)
             break
         case .month:
             self.text = self.displayIncludeLessThan(remainingTime: components.month! + 12 * components.year!,
-                                               timeStyle: .month,
-                                               milliSecond: self.milliSecond)
+                                                    timeStyle: .month,
+                                                    milliSecond: self.milliSecond)
             break
         case .year:
             self.text = self.displayIncludeLessThan(remainingTime: components.year!,
-                                               timeStyle: .year,
-                                               milliSecond: self.milliSecond)
+                                                    timeStyle: .year,
+                                                    milliSecond: self.milliSecond)
             break
         case .full:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
@@ -250,7 +256,9 @@ open class SKCountDownLabel: UILabel {
      *   - milliSecond:     ミリ秒単位で表したの残り時間
      * - Returns:           指定した単位で表される残り時間
      */
-    fileprivate func displayIncludeLessThan(remainingTime: Int, timeStyle: TimeStyle, milliSecond: Double) -> String {
+    fileprivate func displayIncludeLessThan(remainingTime: Int,
+                                            timeStyle: TimeStyle,
+                                            milliSecond: Double) -> String {
         var unitString: String = ""
         
         switch timeStyle {
