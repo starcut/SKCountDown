@@ -74,21 +74,42 @@ open class SKCountDownLabel: UILabel {
     // MARK: Public Method
     
     /**
-     * 期日、時間の表示スタイルをセットし、カウントダウンを開始する
+     * 日時指定形式での期日設定
      *
      * - Parameters:
-     *   - deadline:    期日
-     *   - style:       時間の表示スタイル
+     *   - selectedDate:    期日の文字列
+     *   - style:           時間の表示スタイル
+     *   - identifier:      地域の識別子
      */
-    public func setDeadline(deadline: Date, style: TimeStyle) {
-        self.deadline = deadline
-        self.timeStyle = style
-        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                          target: self,
-                                          selector: #selector(setRemainingTime),
-                                          userInfo: nil,
-                                          repeats: true
-        )
+    public func setDeadlineDate(selectedDate: Date, style: TimeStyle, identifier: String) {
+        let deadline: Date = SKDateFormat.createDateTime(date: selectedDate,
+                                                         identifier: identifier)
+        // Stringに変換した日付を使って期限設定
+        self.setDeadline(deadline: deadline, style: style)
+    }
+    
+    /**
+     * カウントダウン形式での期日設定
+     *
+     * - Parameters:
+     *   - hourAhead:   現時刻から何時間先か
+     *   - minuteAhead: 現時刻から何分先か
+     *   - secondAhead: 現時刻から何秒先か
+     *   - style:       時間の表示スタイル
+     *   - identifier:  地域の識別子
+     */
+    public func setDeadlineCountDown(hourAhead: Int,
+                                     minuteAhead: Int,
+                                     secondAhead: Int,
+                                     style: TimeStyle,
+                                     identifier: String) {
+        let aheadTime: Date = SKDateFormat.getTimeAhead(hourAhead: hourAhead,
+                                                        minuteAhead: minuteAhead,
+                                                        secondAhead: secondAhead,
+                                                        since: .init())
+        let deadline: Date = SKDateFormat.createDateTime(date: aheadTime,
+                                                         identifier: identifier)
+        self.setDeadline(deadline: deadline, style: .full)
     }
     
     // MARK: File Private Method
@@ -101,6 +122,24 @@ open class SKCountDownLabel: UILabel {
         self.adjustsFontSizeToFitWidth = true
         
         self.addObserver(self, forKeyPath: "timeStyle", options: [.new], context: nil)
+    }
+    
+    /**
+     * 期日、時間の表示スタイルをセットし、カウントダウンを開始する
+     *
+     * - Parameters:
+     *   - deadline:    期日
+     *   - style:       時間の表示スタイル
+     */
+    fileprivate func setDeadline(deadline: Date, style: TimeStyle) {
+        self.deadline = deadline
+        self.timeStyle = style
+        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
+                                          target: self,
+                                          selector: #selector(setRemainingTime),
+                                          userInfo: nil,
+                                          repeats: true
+        )
     }
     
     /**

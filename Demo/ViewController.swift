@@ -72,20 +72,15 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     @IBAction fileprivate func start() {
         if self.segmentControl.selectedSegmentIndex == 0 {
-            let date: String = SKDateFormat.createDateTimeString(date: self.datePicker.date,
-                                                                 identifier: "ja_JP")
-            self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: date,
-                                                                                          identifier: "ja_JP"),
-                                            style: .full)
+            self.countDownLabel.setDeadlineDate(selectedDate: self.datePicker.date,
+                                                style: .full,
+                                                identifier: "ja_JP")
         } else {
-            let addSercond: Int = (selectedHour*HOUR_MAX*SECOND_MAX) + (selectedMinute*SECOND_MAX) + selectedSecond
-            let deadline: Date = .init(timeInterval: TimeInterval(addSercond),
-                                       since: .init())
-            let deadlineString: String = SKDateFormat.createDateTimeString(date: deadline,
-                                                                           identifier: "ja_JP")
-            self.countDownLabel.setDeadline(deadline: SKDateFormat.createDateTimeByString(string: deadlineString,
-                                                                                          identifier: "ja_JP"),
-                                            style: .full)
+            self.countDownLabel.setDeadlineCountDown(hourAhead: selectedHour,
+                                                     minuteAhead: selectedMinute,
+                                                     secondAhead: selectedSecond,
+                                                     style: .full,
+                                                     identifier: "ja_JP")
         }
         
         self.countDownLabel.timeupString = "お疲れ様でした"
