@@ -20,6 +20,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     fileprivate var selectedMinute: Int = 0
     fileprivate var selectedSecond: Int = 0
     
+    fileprivate var isMoving: Bool = false
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 3
     }
@@ -71,6 +73,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     @IBAction fileprivate func start() {
+        self.isMoving = true
         if self.segmentControl.selectedSegmentIndex == 0 {
             self.countDownLabel.setDeadlineDate(selectedDate: self.datePicker.date,
                                                 style: .full,
@@ -85,6 +88,11 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         
         self.countDownLabel.deadlineNearTime = 60
         self.countDownLabel.timeupString = "お疲れ様でした"
+    }
+    
+    @IBAction fileprivate func switchMovingTimer() {
+        self.countDownLabel.switchMovingTimer(isMovingTimer: self.isMoving)
+        self.isMoving = !self.isMoving
     }
     
     @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {

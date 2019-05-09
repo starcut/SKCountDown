@@ -172,16 +172,25 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dhz-1a-HPX">
+                                <rect key="frame" x="295.5" y="336" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="switchMovingTimer" destination="BYZ-38-t0r" eventType="touchUpInside" id="2d9-rN-kaR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4Bq-1v-P6q"/>
                             <constraint firstItem="f2D-xS-XL6" firstAttribute="top" secondItem="WWw-Ed-gdE" secondAttribute="bottom" constant="18" id="CaH-rf-duf"/>
                             <constraint firstItem="WWw-Ed-gdE" firstAttribute="top" secondItem="kvy-az-ve3" secondAttribute="bottom" constant="18" id="CeJ-u9-Asq"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="leading" secondItem="WWw-Ed-gdE" secondAttribute="trailing" constant="20" id="EYE-e8-eQr"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f2D-xS-XL6" secondAttribute="trailing" constant="40" id="IjT-1x-NkN"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="top" secondItem="f2D-xS-XL6" secondAttribute="bottom" constant="25" id="Seq-L0-QnP"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WI1-gV-9C2"/>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="bck-ii-ya5"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="centerY" secondItem="WWw-Ed-gdE" secondAttribute="centerY" id="cT6-72-Tcv"/>
                             <constraint firstItem="WWw-Ed-gdE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="e4k-Wg-zMC"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="h8C-IP-PhK"/>
                             <constraint firstItem="ih6-X9-Cc9" firstAttribute="top" secondItem="lRP-9A-Vbv" secondAttribute="bottom" constant="16" id="m40-5o-zPE"/>
