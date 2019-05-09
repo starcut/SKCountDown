@@ -16,7 +16,7 @@
 		7C3A22202271A2F40042B3FF /* SKCountDownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A221F2271A2F30042B3FF /* SKCountDownLabel.swift */; };
 		7C3A22212271A32A0042B3FF /* SKCountDownLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A221F2271A2F30042B3FF /* SKCountDownLabel.swift */; };
 		7C3A22232271A5110042B3FF /* SKDateFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A22222271A5110042B3FF /* SKDateFormat.swift */; };
-		7C3A22262271A7230042B3FF /* SKCountDown.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3A21FE2271A26B0042B3FF /* SKCountDown.framework */; };
+		7C3A22262271A7230042B3FF /* SKCountDown.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C3A21FE2271A26B0042B3FF /* SKCountDown.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7CEFD6342283B1FD002FF27A /* SKDateFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A22222271A5110042B3FF /* SKDateFormat.swift */; };
 /* End PBXBuildFile section */
 
