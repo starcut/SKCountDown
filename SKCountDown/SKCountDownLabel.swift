@@ -46,6 +46,8 @@ open class SKCountDownLabel: UILabel {
     fileprivate var deadline: Date = Date()
     /** タイマー */
     fileprivate var timer: Timer!
+    /** 残り時間わずかの設定 */
+    fileprivate var littleTimeLeft: Double = 0
     
     // MARK: Override Method
     
@@ -82,6 +84,8 @@ open class SKCountDownLabel: UILabel {
      *   - identifier:      地域の識別子
      */
     public func setDeadlineDate(selectedDate: Date, style: TimeStyle, identifier: String) {
+        self.commonInit()
+        
         let deadline: Date = SKDateFormat.createDateTime(date: selectedDate,
                                                          identifier: identifier)
         // Stringに変換した日付を使って期限設定
@@ -103,6 +107,8 @@ open class SKCountDownLabel: UILabel {
                                      secondAhead: Int,
                                      style: TimeStyle,
                                      identifier: String) {
+        self.commonInit()
+        
         let aheadTime: Date = SKDateFormat.getTimeAhead(hourAhead: hourAhead,
                                                         minuteAhead: minuteAhead,
                                                         secondAhead: secondAhead,
@@ -118,9 +124,17 @@ open class SKCountDownLabel: UILabel {
      * 共通の初期化事項
      */
     fileprivate func commonInit() {
+        if self.timer != nil {
+            self.timer.invalidate()
+        }
+        
         self.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: self.font.pointSize)!
         self.adjustsFontSizeToFitWidth = true
+        self.textColor = .black
         
+        if self.observationInfo != nil {
+            self.removeObserver(self, forKeyPath: "timeStyle")
+        }
         self.addObserver(self, forKeyPath: "timeStyle", options: [.new], context: nil)
     }
     
@@ -154,6 +168,11 @@ open class SKCountDownLabel: UILabel {
             self.text = self.timeupString
             return
         }
+        
+        if milliSecond <= 60 {
+            self.textColor = .red
+        }
+        
         // 今から期日までの年数などを取得
         let components: DateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond],
                                                                          from: Date(),

@@ -74,13 +74,13 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         if self.segmentControl.selectedSegmentIndex == 0 {
             self.countDownLabel.setDeadlineDate(selectedDate: self.datePicker.date,
                                                 style: .full,
-                                                identifier: "ja_JP")
+                                                identifier: self.datePicker.locale!.identifier)
         } else {
             self.countDownLabel.setDeadlineCountDown(hourAhead: selectedHour,
                                                      minuteAhead: selectedMinute,
                                                      secondAhead: selectedSecond,
                                                      style: .full,
-                                                     identifier: "ja_JP")
+                                                     identifier: self.datePicker.locale!.identifier)
         }
         
         self.countDownLabel.timeupString = "お疲れ様でした"
