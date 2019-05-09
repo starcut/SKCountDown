@@ -83,6 +83,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                                                      identifier: self.datePicker.locale!.identifier)
         }
         
+        self.countDownLabel.deadlineNearTime = 60
         self.countDownLabel.timeupString = "お疲れ様でした"
     }
     

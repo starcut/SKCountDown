@@ -26,6 +26,8 @@ open class SKCountDownLabel: UILabel {
     open var timeStyle: TimeStyle = .defaultStyle
     /** 期日が来た時に表示する文字列 */
     open var timeupString: String! = "時間切れ"
+    /** 期日が近いと判定される残り時間 */
+    open var deadlineNearTime: Double = 0
     /** 年の文字列のフォーマット */
     fileprivate let STRING_FORMAT_YEAR: String = "%d年"
     /** 月の文字列のフォーマット */
@@ -46,8 +48,8 @@ open class SKCountDownLabel: UILabel {
     fileprivate var deadline: Date = Date()
     /** タイマー */
     fileprivate var timer: Timer!
-    /** 残り時間わずかの設定 */
-    fileprivate var littleTimeLeft: Double = 0
+    /** 残り時間 */
+    fileprivate var milliSecond: Double = 0
     
     // MARK: Override Method
     
@@ -83,7 +85,9 @@ open class SKCountDownLabel: UILabel {
      *   - style:           時間の表示スタイル
      *   - identifier:      地域の識別子
      */
-    public func setDeadlineDate(selectedDate: Date, style: TimeStyle, identifier: String) {
+    public func setDeadlineDate(selectedDate: Date,
+                                style: TimeStyle,
+                                identifier: String) {
         self.commonInit()
         
         let deadline: Date = SKDateFormat.createDateTime(date: selectedDate,
@@ -116,6 +120,14 @@ open class SKCountDownLabel: UILabel {
         let deadline: Date = SKDateFormat.createDateTime(date: aheadTime,
                                                          identifier: identifier)
         self.setDeadline(deadline: deadline, style: .full)
+    }
+    
+    /**
+     * 残り時間を取得する
+     * - Returns:   残り時間（単位は秒）
+     */
+    public func getRemainingTime() -> Double {
+        return self.milliSecond
     }
     
     // MARK: File Private Method
@@ -160,16 +172,18 @@ open class SKCountDownLabel: UILabel {
      * 残り時間をスタイルに応じて表示する
      */
     @objc fileprivate func setRemainingTime() {
-        var milliSecond: Double = floor(self.deadline.timeIntervalSinceNow * 1000) / 1000
-        // 残り時間がない場合はタイマーを止め、時間切れの表示をし処理を終える
-        if milliSecond < 0 {
-            milliSecond = 0
+        self.milliSecond = floor(self.deadline.timeIntervalSinceNow * 1000) / 1000
+        
+        // 期日がきた場合はタイマーを止め、時間切れの表示をし処理を終える
+        if self.milliSecond < 0 {
+            self.milliSecond = 0
             self.timer.invalidate()
             self.text = self.timeupString
             return
         }
         
-        if milliSecond <= 60 {
+        // 残り時間が少なくなったら赤文字表示
+        if self.milliSecond <= self.deadlineNearTime {
             self.textColor = .red
         }
         
@@ -179,35 +193,35 @@ open class SKCountDownLabel: UILabel {
                                                                          to: self.deadline)
         switch self.timeStyle {
         case .milliSecond:
-            self.text = String(format: "%.3f秒", milliSecond)
+            self.text = String(format: "%.3f秒", self.milliSecond)
             break
         case .second:
-            self.text = String(format: "%d秒", Int(floor(milliSecond)))
+            self.text = String(format: "%d秒", Int(floor(self.milliSecond)))
             break
         case .minute:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(milliSecond) / 60),
+            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
                                                timeStyle: .minute,
-                                               milliSecond: milliSecond)
+                                               milliSecond: self.milliSecond)
             break
         case .hour:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(milliSecond) / 3600),
+            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 3600),
                                                timeStyle: .hour,
-                                               milliSecond: milliSecond)
+                                               milliSecond: self.milliSecond)
             break
         case .day:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(milliSecond) / (3600 * 24)),
+            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / (3600 * 24)),
                                                timeStyle: .day,
-                                               milliSecond: milliSecond)
+                                               milliSecond: self.milliSecond)
             break
         case .month:
             self.text = self.displayIncludeLessThan(remainingTime: components.month! + 12 * components.year!,
                                                timeStyle: .month,
-                                               milliSecond: milliSecond)
+                                               milliSecond: self.milliSecond)
             break
         case .year:
             self.text = self.displayIncludeLessThan(remainingTime: components.year!,
                                                timeStyle: .year,
-                                               milliSecond: milliSecond)
+                                               milliSecond: self.milliSecond)
             break
         case .full:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
