@@ -36,6 +36,8 @@ open class SKCountDownLabel: UILabel {
             }
         }
     }
+    /** 最初に表示しておく文字列 */
+    open var initialText: String!
     /** 期日が来た時に表示する文字列 */
     open var timeupString: String = "時間切れ"
     /** 期日が近いと判定される残り時間 */
@@ -86,13 +88,11 @@ open class SKCountDownLabel: UILabel {
     // -------------------------------------------------------
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        
         self.commonInit()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
         self.commonInit()
     }
     
@@ -104,8 +104,10 @@ open class SKCountDownLabel: UILabel {
                                     change: [NSKeyValueChangeKey : Any]?,
                                     context: UnsafeMutableRawPointer?) {
         // 表示時間のスタイルが変更されたらスタイルを変更して再表示を行う
-        if keyPath == "timeStyle" {
-            //self.setRemainingTime()
+        if keyPath == "initialText" {
+            if self.milliSecond == 0 {
+                self.text = self.initialText
+            }
         }
     }
     
@@ -210,6 +212,12 @@ open class SKCountDownLabel: UILabel {
         return self.milliSecond
     }
     
+    /**
+     * タイマーをリセットする
+     */
+    public func resetTimer() {
+        self.commonInit()
+    }
     // -------------------------------------------------------
     // MARK: File Private Method
     // -------------------------------------------------------
@@ -217,6 +225,14 @@ open class SKCountDownLabel: UILabel {
      * 共通の初期化事項
      */
     fileprivate func commonInit() {
+        self.milliSecond = .zero
+        self.deadline = .init()
+        if self.initialText == nil {
+            self.initialText = self.changeTimeStyle()
+            self.text = self.changeTimeStyle()
+        }
+        self.text = self.initialText
+        
         if self.timer != nil {
             self.timer.invalidate()
         }
@@ -226,9 +242,9 @@ open class SKCountDownLabel: UILabel {
         self.textColor = .black
         
         if self.observationInfo != nil {
-            self.removeObserver(self, forKeyPath: "timeStyle")
+            self.removeObserver(self, forKeyPath: "initialText")
         }
-        self.addObserver(self, forKeyPath: "timeStyle", options: [.new], context: nil)
+        self.addObserver(self, forKeyPath: "initialText", options: [.new], context: nil)
     }
     
     /**
@@ -255,55 +271,55 @@ open class SKCountDownLabel: UILabel {
             self.textColor = .red
         }
         
+        self.text = self.changeTimeStyle()
+    }
+    
+    /**
+     * 残り時間の表示形式を変える
+     *
+     * - Returns:   timeStyleに応じた残り時間の文字列
+     */
+    fileprivate func changeTimeStyle() -> String {
         // 今から期日までの年数などを取得
         let components: DateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond],
                                                                          from: Date(),
                                                                          to: self.deadline)
         switch self.timeStyle {
         case .milliSecond:
-            self.text = String(format: STRING_FORMAT_ONLY_MILLISECOND, self.milliSecond)
-            break
+            return String(format: STRING_FORMAT_ONLY_MILLISECOND, self.milliSecond)
         case .second:
-            self.text = String(format: STRING_FORMAT_ONLY_SECOND, Int(floor(self.milliSecond)))
-            break
+            return String(format: STRING_FORMAT_ONLY_SECOND, Int(floor(self.milliSecond)))
         case .minute:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
-                                                    timeStyle: .minute,
-                                                    milliSecond: self.milliSecond)
-            break
+            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
+                                               timeStyle: .minute,
+                                               milliSecond: self.milliSecond)
         case .hour:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 3600),
-                                                    timeStyle: .hour,
-                                                    milliSecond: self.milliSecond)
-            break
+            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 3600),
+                                               timeStyle: .hour,
+                                               milliSecond: self.milliSecond)
         case .day:
-            self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / (3600 * 24)),
-                                                    timeStyle: .day,
-                                                    milliSecond: self.milliSecond)
-            break
+            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / (3600 * 24)),
+                                               timeStyle: .day,
+                                               milliSecond: self.milliSecond)
         case .month:
-            self.text = self.displayIncludeLessThan(remainingTime: components.month! + 12 * components.year!,
-                                                    timeStyle: .month,
-                                                    milliSecond: self.milliSecond)
-            break
+            return self.displayIncludeLessThan(remainingTime: components.month! + 12 * components.year!,
+                                               timeStyle: .month,
+                                               milliSecond: self.milliSecond)
         case .year:
-            self.text = self.displayIncludeLessThan(remainingTime: components.year!,
-                                                    timeStyle: .year,
-                                                    milliSecond: self.milliSecond)
-            break
+            return self.displayIncludeLessThan(remainingTime: components.year!,
+                                               timeStyle: .year,
+                                               milliSecond: self.milliSecond)
         case .full:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
             remainingString.append(contentsOf: String(format: STRING_FORMAT_MILLISECOND,
                                                       components.second!,
                                                       components.nanosecond! / 1000000))
-            self.text = String(remainingString)
-            break
+            return String(remainingString)
         case .defaultStyle:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
             remainingString.append(contentsOf: String(format: STRING_FORMAT_SECOND,
                                                       components.second!))
-            self.text = String(remainingString)
-            break
+            return String(remainingString)
         }
     }
     

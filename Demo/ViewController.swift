@@ -22,6 +22,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     fileprivate var isStopped: Bool = true
     
+    @IBOutlet private weak var countDownLabel: SKCountDownLabel!
+    @IBOutlet private weak var datePicker: UIDatePicker!
+    @IBOutlet private weak var countDownPicker: UIPickerView!
+    @IBOutlet private weak var segmentControl: UISegmentedControl!
+    @IBOutlet private weak var stopButton: UIButton!
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 3
     }
@@ -50,16 +56,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
     }
     
-    @IBOutlet private weak var countDownLabel: SKCountDownLabel!
-    @IBOutlet private weak var datePicker: UIDatePicker!
-    @IBOutlet private weak var countDownPicker: UIPickerView!
-    @IBOutlet private weak var segmentControl: UISegmentedControl!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.countDownPicker.delegate = self
         self.countDownPicker.dataSource = self
+        self.countDownLabel.initialText = "停止中"
         
         for hour in 0 ..< HOUR_MAX {
             self.timeItem[0].append(hour)
@@ -92,7 +94,16 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     @IBAction fileprivate func switchMovingTimer() {
         self.isStopped = !self.isStopped
+        if self.isStopped {
+            self.stopButton.titleLabel?.text = "再開"
+        } else {
+            self.stopButton.titleLabel?.text = "一時停止"
+        }
         self.countDownLabel.switchMovingTimer(isStopedTimer: self.isStopped)
+    }
+    
+    @IBAction fileprivate func reset() {
+        self.countDownLabel.resetTimer()
     }
     
     @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {
