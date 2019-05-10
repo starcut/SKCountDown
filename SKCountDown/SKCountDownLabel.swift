@@ -10,21 +10,30 @@ import UIKit
 
 /** 表示する時間のスタイル */
 public enum TimeStyle: UInt {
-    case defaultStyle = 0   /** 残り時間を年数から秒までそれぞれの単位に分けて表示する */
-    case milliSecond        /** 残り時間を秒単位で表示する（ミリ秒まで） */
-    case second             /** 残り時間を秒単位で表示する（ミリ秒以下切り捨て） */
-    case minute             /** 残り時間を分単位で表示する（秒以下切り捨て） */
-    case hour               /** 残り時間を時間単位で表示する（分以下切り捨て） */
-    case day                /** 残り日数を表示する（時間以下切り捨て） */
-    case month              /** 残り月数を表示する（日数以下切り捨て） */
-    case year               /** 残り年数を表示する（月数以下切り捨て） */
-    case full               /** 残り時間を年数からミリ秒までそれぞれの単位を分けて表示する */
+    case defaultStyle = 0       /** 残り時間を年数から秒までそれぞれの単位に分けて表示する */
+    case milliSecond            /** 残り時間を秒単位で表示する（ミリ秒まで） */
+    case second                 /** 残り時間を秒単位で表示する（ミリ秒以下切り捨て） */
+    case minute                 /** 残り時間を分単位で表示する（秒以下切り捨て） */
+    case hour                   /** 残り時間を時間単位で表示する（分以下切り捨て） */
+    case day                    /** 残り日数を表示する（時間以下切り捨て） */
+    case month                  /** 残り月数を表示する（日数以下切り捨て） */
+    case year                   /** 残り年数を表示する（月数以下切り捨て） */
+    case full                   /** 残り時間を年数からミリ秒までそれぞれの単位を分けて表示する */
+    case digital                /** HH:mm:ssの形式で表示する */
+    case digitalFull            /** HH:mm:ss.SSSの形式で表示する */
+    case digitalDateTime        /** YY/MM/dd HH:mm:ssの形式で表示する */
+    case digitalDateTimeFull    /** YY/MM/dd HH:mm:ss.SSSの形式で表示する */
 }
 
 /** 表示する時間のスタイル */
 fileprivate enum TimerMode: UInt {
     case deadlineMode = 0   /** 期日指定のカウントダウンモード */
     case timerMode          /** タイマー形式のカウントダウンモード */
+}
+
+/** エラーメッセージ */
+fileprivate enum ErrorText: String {
+    case canUseOnlyTimerMode = "タイマーモードでのみ表示可能"
 }
 
 open class SKCountDownLabel: UILabel {
@@ -61,9 +70,13 @@ open class SKCountDownLabel: UILabel {
     /** ミリ秒の文字列のフォーマット */
     fileprivate let STRING_FORMAT_MILLISECOND: String = "%02d.%03d秒"
     /** タイマー形式のフォーマット */
-    fileprivate let STRING_FORMAT_SECOND_TIMER: String = "%02d:%02d:%02d"
+    fileprivate let STRING_FORMAT_SECOND_DIGITAL: String = "%02d:%02d:%02d"
     /** ミリ秒まで含めたタイマー形式のフォーマット */
-    fileprivate let STRING_FORMAT_MILLISECOND_TIMER: String = "%02d:%02d:%06.3f"
+    fileprivate let STRING_FORMAT_MILLISECOND_DIGITAL: String = "%02d:%02d:%02d.%03d"
+    /** タイマー形式の日時を表示するフォーマット */
+    fileprivate let STRING_FORMAT_DIGITAL_DATE_TIME: String = "%02d/%02d/%02d %02d:%02d:%02d"
+    /** タイマー形式のミリ秒まで含めた日時を表示するフォーマット */
+    fileprivate let STRING_FORMAT_DIGITAL_DATE_TIME_FULL: String = "%02d/%02d/%02d %02d:%02d:%02d.%03d"
     /** 表示する時間のタイムインターバル */
     fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** 期日 */
@@ -285,6 +298,11 @@ open class SKCountDownLabel: UILabel {
                                                                          from: Date(),
                                                                          to: self.deadline)
         switch self.timeStyle {
+        case .defaultStyle:
+            var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
+            remainingString.append(contentsOf: String(format: STRING_FORMAT_SECOND,
+                                                      components.second!))
+            return String(remainingString)
         case .milliSecond:
             return String(format: STRING_FORMAT_ONLY_MILLISECOND, self.milliSecond)
         case .second:
@@ -315,12 +333,63 @@ open class SKCountDownLabel: UILabel {
                                                       components.second!,
                                                       components.nanosecond! / 1000000))
             return String(remainingString)
-        case .defaultStyle:
-            var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
-            remainingString.append(contentsOf: String(format: STRING_FORMAT_SECOND,
-                                                      components.second!))
-            return String(remainingString)
+        case .digital:
+            if self.timerMode == .deadlineMode && !self.isLessThanDay(diffDateComponents: components) {
+                return ErrorText.canUseOnlyTimerMode.rawValue
+            }
+            return String(format: STRING_FORMAT_SECOND_DIGITAL,
+                          components.hour!,
+                          components.minute!,
+                          components.second!)
+        case .digitalFull:
+            if self.timerMode == .deadlineMode && !self.isLessThanDay(diffDateComponents: components) {
+                return ErrorText.canUseOnlyTimerMode.rawValue
+            }
+            return String(format: STRING_FORMAT_MILLISECOND_DIGITAL,
+                        components.hour!,
+                          components.minute!,
+                          components.second!,
+                          components.nanosecond! / 1000000)
+        case .digitalDateTime:
+            if self.isLessThanDay(diffDateComponents: components) {
+                return String(format: STRING_FORMAT_SECOND_DIGITAL,
+                              components.hour!,
+                              components.minute!,
+                              components.second!)
+            }
+            return String(format: STRING_FORMAT_DIGITAL_DATE_TIME,
+                          components.year!,
+                          components.month!,
+                          components.day!,
+                          components.hour!,
+                          components.minute!,
+                          components.second!)
+        case .digitalDateTimeFull:
+            if self.isLessThanDay(diffDateComponents: components) {
+                return String(format: STRING_FORMAT_MILLISECOND_DIGITAL,
+                              components.hour!,
+                              components.minute!,
+                              components.second!,
+                              components.nanosecond! / 1000000)
+            }
+            return String(format: STRING_FORMAT_DIGITAL_DATE_TIME_FULL,
+                          components.year!,
+                          components.month!,
+                          components.day!,
+                          components.hour!,
+                          components.minute!,
+                          components.second!,
+                          components.nanosecond! / 1000000)
         }
+    }
+    
+    /**
+     * 残り時間が1日あるかチェックする
+     *
+     * - Returns:   残り時間が1日以上ある
+     */
+    fileprivate func isLessThanDay(diffDateComponents: DateComponents) -> Bool {
+        return (diffDateComponents.year! == 0 && diffDateComponents.month! == 0 && diffDateComponents.day! == 0)
     }
     
     /**
