@@ -20,7 +20,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     fileprivate var selectedMinute: Int = 0
     fileprivate var selectedSecond: Int = 0
     
-    fileprivate var isMoving: Bool = false
+    fileprivate var isStopped: Bool = true
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 3
@@ -73,7 +73,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     @IBAction fileprivate func start() {
-        self.isMoving = true
+        self.isStopped = false
         if self.segmentControl.selectedSegmentIndex == 0 {
             self.countDownLabel.setDeadlineDate(selectedDate: self.datePicker.date,
                                                 style: .full,
@@ -91,8 +91,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     @IBAction fileprivate func switchMovingTimer() {
-        self.countDownLabel.switchMovingTimer(isMovingTimer: self.isMoving)
-        self.isMoving = !self.isMoving
+        self.isStopped = !self.isStopped
+        self.countDownLabel.switchMovingTimer(isStopedTimer: self.isStopped)
     }
     
     @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {

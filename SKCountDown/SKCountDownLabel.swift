@@ -29,11 +29,21 @@ fileprivate enum TimerMode: UInt {
 
 open class SKCountDownLabel: UILabel {
     /** 時間の表示形式 */
-    open var timeStyle: TimeStyle = .defaultStyle
+    open var timeStyle: TimeStyle = .defaultStyle {
+        didSet {
+            if self.milliSecond > 0 {
+                self.updateTimeDisplay()
+            }
+        }
+    }
     /** 期日が来た時に表示する文字列 */
     open var timeupString: String = "時間切れ"
     /** 期日が近いと判定される残り時間 */
     open var deadlineNearTime: Double = 0
+    /** ミリ秒まで含めた秒のみ文字列のフォーマット */
+    fileprivate let STRING_FORMAT_ONLY_MILLISECOND: String = "%.3f秒"
+    /** 秒のみ文字列のフォーマット */
+    fileprivate let STRING_FORMAT_ONLY_SECOND: String = "%02d秒"
     /** 年の文字列のフォーマット */
     fileprivate let STRING_FORMAT_YEAR: String = "%d年"
     /** 月の文字列のフォーマット */
@@ -48,6 +58,10 @@ open class SKCountDownLabel: UILabel {
     fileprivate let STRING_FORMAT_SECOND: String = "%02d秒"
     /** ミリ秒の文字列のフォーマット */
     fileprivate let STRING_FORMAT_MILLISECOND: String = "%02d.%03d秒"
+    /** タイマー形式のフォーマット */
+    fileprivate let STRING_FORMAT_SECOND_TIMER: String = "%02d:%02d:%02d"
+    /** ミリ秒まで含めたタイマー形式のフォーマット */
+    fileprivate let STRING_FORMAT_MILLISECOND_TIMER: String = "%02d:%02d:%06.3f"
     /** 表示する時間のタイムインターバル */
     fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** 期日 */
@@ -55,9 +69,17 @@ open class SKCountDownLabel: UILabel {
     /** タイマー */
     fileprivate var timer: Timer!
     /** 残り時間 */
-    fileprivate var milliSecond: Double = 0
+    fileprivate var milliSecond: Double = .zero {
+        didSet {
+            self.updateTimeDisplay()
+        }
+    }
     /** カウントダウンの形式 */
     fileprivate var timerMode: TimerMode = .deadlineMode
+    /** 一時停止した時間 */
+    fileprivate var stopTime: Date = .init()
+    /** 一時停止を解除した時間 */
+    fileprivate var restartTime: Date = .init()
     
     // -------------------------------------------------------
     // MARK: Override Method
@@ -83,7 +105,7 @@ open class SKCountDownLabel: UILabel {
                                     context: UnsafeMutableRawPointer?) {
         // 表示時間のスタイルが変更されたらスタイルを変更して再表示を行う
         if keyPath == "timeStyle" {
-            self.setRemainingTime()
+            //self.setRemainingTime()
         }
     }
     
@@ -107,7 +129,14 @@ open class SKCountDownLabel: UILabel {
         let deadline: Date = SKDateFormat.createDateTime(date: selectedDate,
                                                          identifier: identifier)
         // Stringに変換した日付を使って期限設定
-        self.setDeadline(deadline: deadline, style: style)
+        self.deadline = deadline
+        self.timeStyle = style
+        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
+                                          target: self,
+                                          selector: #selector(updateRemainingTime),
+                                          userInfo: nil,
+                                          repeats: true
+        )
     }
     
     /**
@@ -130,13 +159,16 @@ open class SKCountDownLabel: UILabel {
         self.timerMode = .timerMode
         let MINUTE_MAX: Int = 60
         let SECOND_MAX: Int = 60
-        self.milliSecond = Double(hourAhead * MINUTE_MAX * SECOND_MAX)
-        self.milliSecond += Double(minuteAhead * SECOND_MAX)
-        self.milliSecond += Double(secondAhead)
+        var addTime: Int = hourAhead * MINUTE_MAX * SECOND_MAX
+        addTime += minuteAhead * SECOND_MAX
+        addTime += secondAhead
+        // Stringに変換した日付を使って期限設定
+        let deadlineTemp = Date(timeInterval: TimeInterval(addTime), since: .init())
+        self.deadline = SKDateFormat.createDateTime(date: deadlineTemp, identifier: identifier)
         self.timeStyle = style
         self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                           target: self,
-                                          selector: #selector(setRemainingTime),
+                                          selector: #selector(updateRemainingTime),
                                           userInfo: nil,
                                           repeats: true
         )
@@ -146,18 +178,25 @@ open class SKCountDownLabel: UILabel {
      * カウントダウンの一時停止、再開を切り替える
      * ただし、日付指定のカウントダウンの場合はこのメソッドは無効
      */
-    public func switchMovingTimer(isMovingTimer: Bool) {
+    public func switchMovingTimer(isStopedTimer: Bool) {
         if self.timerMode != .timerMode {
             return
         }
         
         // 動いているときはタイマーを止める
-        if isMovingTimer {
+        if isStopedTimer {
             self.timer.invalidate()
+            // 一時停止させた時刻を記録
+            self.stopTime = .init()
         } else {
+            // 一時停止を解除した時刻を記録し、一時停止させていた時間を算出
+            self.restartTime = .init()
+            let stopInterval: Double = self.restartTime.timeIntervalSince(self.stopTime)
+            // 一時停止させていた分だけ期限を延ばす
+            self.deadline = self.deadline.addingTimeInterval(stopInterval)
             self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                               target: self,
-                                              selector: #selector(setRemainingTime),
+                                              selector: #selector(updateRemainingTime),
                                               userInfo: nil,
                                               repeats: true)
         }
@@ -193,41 +232,20 @@ open class SKCountDownLabel: UILabel {
     }
     
     /**
-     * 期日、時間の表示スタイルをセットし、カウントダウンを開始する
-     *
-     * - Parameters:
-     *   - deadline:    期日
-     *   - style:       時間の表示スタイル
+     * 残り時間を更新する
      */
-    fileprivate func setDeadline(deadline: Date, style: TimeStyle) {
-        self.deadline = deadline
-        self.timeStyle = style
-        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                          target: self,
-                                          selector: #selector(setRemainingTime),
-                                          userInfo: nil,
-                                          repeats: true
-        )
+    @objc fileprivate func updateRemainingTime() {
+        self.milliSecond = floor(self.deadline.timeIntervalSinceNow * 1000) / 1000
     }
     
     /**
-     * 残り時間をスタイルに応じて表示する
+     * 残り時間を設定したスタイルに応じて表示する
      */
-    @objc fileprivate func setRemainingTime() {
-        switch self.timerMode {
-        case .deadlineMode:
-            self.milliSecond = floor(self.deadline.timeIntervalSinceNow * 1000) / 1000
-            break
-        case .timerMode:
-            self.milliSecond = self.milliSecond - UPDATE_DEADLINE_TIME_INTERVAL
-            
-            break
-        }
-        
+    fileprivate func updateTimeDisplay() {
         // 期日がきた場合はタイマーを止め、時間切れの表示をし処理を終える
         if self.milliSecond < 0 {
             self.milliSecond = 0
-            self.switchMovingTimer(isMovingTimer: true)
+            self.switchMovingTimer(isStopedTimer: true)
             self.text = self.timeupString
             return
         }
@@ -243,10 +261,10 @@ open class SKCountDownLabel: UILabel {
                                                                          to: self.deadline)
         switch self.timeStyle {
         case .milliSecond:
-            self.text = String(format: "%.3f秒", self.milliSecond)
+            self.text = String(format: STRING_FORMAT_ONLY_MILLISECOND, self.milliSecond)
             break
         case .second:
-            self.text = String(format: "%d秒", Int(floor(self.milliSecond)))
+            self.text = String(format: STRING_FORMAT_ONLY_SECOND, Int(floor(self.milliSecond)))
             break
         case .minute:
             self.text = self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
@@ -274,69 +292,17 @@ open class SKCountDownLabel: UILabel {
                                                     milliSecond: self.milliSecond)
             break
         case .full:
-            self.displayFullStyle(components: components)
-            break
-        case .defaultStyle:
-            self.displayDefaultStyle(components: components)
-            break
-        }
-    }
-    
-    /**
-     * 全ての単位の時間を表示する（日付指定形式とタイマー形式の場合とで処理を分岐させる）
-     */
-    fileprivate func displayFullStyle(components: DateComponents) {
-        switch self.timerMode {
-        case .deadlineMode:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
             remainingString.append(contentsOf: String(format: STRING_FORMAT_MILLISECOND,
                                                       components.second!,
                                                       components.nanosecond! / 1000000))
             self.text = String(remainingString)
             break
-        case .timerMode:
-            var remainingTime = Int(self.milliSecond)
-            var text: Substring = ""
-            text.append(contentsOf: String(format: STRING_FORMAT_HOUR, Int(floor(self.milliSecond) / 3600)))
-            text.append(contentsOf: String(format: STRING_FORMAT_MINUTE, (Int(floor(self.milliSecond)) % 3600) / 60))
-            text.append(contentsOf: String(format: STRING_FORMAT_SECOND, Int(floor(self.milliSecond)) % 60))
-            self.text = String(text)
-            break
-        }
-    }
-    
-    /**
-     * ミリ秒以外の全ての単位の時間を表示する（日付指定形式とタイマー形式の場合とで処理を分岐させる）
-     */
-    fileprivate func displayDefaultStyle(components: DateComponents) {
-        switch self.timerMode {
-        case .deadlineMode:
+        case .defaultStyle:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
             remainingString.append(contentsOf: String(format: STRING_FORMAT_SECOND,
                                                       components.second!))
             self.text = String(remainingString)
-            break
-        case .timerMode:
-            var text: Substring = ""
-            text.append(contentsOf: String(format: STRING_FORMAT_HOUR, Int(floor(self.milliSecond) / 3600)))
-            text.append(contentsOf: String(format: STRING_FORMAT_MINUTE, (Int(floor(self.milliSecond)) % 3600) / 60))
-            text.append(contentsOf: String(format: STRING_FORMAT_MILLISECOND,
-                                           (Int(floor(self.milliSecond)) % 60),
-                                           (self.milliSecond - Int(floor(self.milliSecond) % 60))))
-            // 時間
-            /*text = self.appendRemainingDateString(remainingDateTime: remainingTime / 3600,
-                                                  StringFormat: STRING_FORMAT_HOUR,
-                                                  remainingDateString: text)
-            // 分
-            remainingTime = remainingTime % 3600
-            text = self.appendRemainingDateString(remainingDateTime: remainingTime / 60,
-                                                  StringFormat: STRING_FORMAT_MINUTE,
-                                                  remainingDateString: text)
-            // 秒
-            remainingTime = remainingTime % 60
-            text.append(contentsOf: String(format: STRING_FORMAT_SECOND,
-                                           remainingTime))*/
-            self.text = String(text)
             break
         }
     }
