@@ -179,6 +179,9 @@
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dhz-1a-HPX">
                                 <rect key="frame" x="176" y="325" width="62" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="62" id="h2c-et-SaH"/>
+                                </constraints>
                                 <state key="normal" title="一時停止"/>
                                 <connections>
                                     <action selector="switchMovingTimer" destination="BYZ-38-t0r" eventType="touchUpInside" id="2d9-rN-kaR"/>
@@ -196,14 +199,14 @@
                         <constraints>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4Bq-1v-P6q"/>
                             <constraint firstItem="dhz-1a-HPX" firstAttribute="top" secondItem="kvy-az-ve3" secondAttribute="bottom" constant="17" id="5t5-9H-AMI"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pyZ-fl-j8y" secondAttribute="trailing" constant="8" id="8b4-FZ-G6a"/>
                             <constraint firstItem="dhz-1a-HPX" firstAttribute="leading" secondItem="WWw-Ed-gdE" secondAttribute="trailing" constant="20" id="EYE-e8-eQr"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f2D-xS-XL6" secondAttribute="trailing" constant="40" id="IjT-1x-NkN"/>
-                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="19" id="M3o-lN-1XR"/>
+                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="M3o-lN-1XR"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="Mlv-cL-tEE"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="top" secondItem="f2D-xS-XL6" secondAttribute="bottom" constant="25" id="Seq-L0-QnP"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WI1-gV-9C2"/>
                             <constraint firstItem="pyZ-fl-j8y" firstAttribute="centerY" secondItem="dhz-1a-HPX" secondAttribute="centerY" id="Xyw-0P-kxb"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pyZ-fl-j8y" secondAttribute="trailing" constant="94" id="ZxJ-n2-0eC"/>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="bck-ii-ya5"/>
                             <constraint firstItem="pyZ-fl-j8y" firstAttribute="leading" secondItem="dhz-1a-HPX" secondAttribute="trailing" constant="20" id="cIX-aw-mMI"/>
                             <constraint firstItem="dhz-1a-HPX" firstAttribute="centerY" secondItem="WWw-Ed-gdE" secondAttribute="centerY" id="cT6-72-Tcv"/>

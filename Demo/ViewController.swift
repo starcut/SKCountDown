@@ -20,13 +20,11 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     fileprivate var selectedMinute: Int = 0
     fileprivate var selectedSecond: Int = 0
     
-    fileprivate var isStopped: Bool = true
-    
-    @IBOutlet private weak var countDownLabel: SKCountDownLabel!
-    @IBOutlet private weak var datePicker: UIDatePicker!
-    @IBOutlet private weak var countDownPicker: UIPickerView!
-    @IBOutlet private weak var segmentControl: UISegmentedControl!
-    @IBOutlet private weak var stopButton: UIButton!
+    @IBOutlet fileprivate weak var countDownLabel: SKCountDownLabel!
+    @IBOutlet fileprivate weak var datePicker: UIDatePicker!
+    @IBOutlet fileprivate weak var countDownPicker: UIPickerView!
+    @IBOutlet fileprivate weak var segmentControl: UISegmentedControl!
+    @IBOutlet fileprivate weak var stopButton: UIButton!
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 3
@@ -74,7 +72,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     @IBAction fileprivate func start() {
-        self.isStopped = false
         if self.segmentControl.selectedSegmentIndex == 0 {
             self.countDownLabel.setDeadlineDate(selectedDate: self.datePicker.date,
                                                 style: .full,
@@ -92,13 +89,19 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     
     @IBAction fileprivate func switchMovingTimer() {
-        self.isStopped = !self.isStopped
-        if self.isStopped {
-            self.stopButton.titleLabel?.text = "再開"
-        } else {
-            self.stopButton.titleLabel?.text = "一時停止"
+        // タイマーがスタートしていない場合は一時停止ボタンは動作させない
+        if self.countDownLabel.getRemainingTime() <= 0 {
+            return
         }
-        self.countDownLabel.switchMovingTimer(isStopedTimer: self.isStopped)
+        
+        self.countDownLabel.switchMovingTimer(completion: {(isStopped: Bool) in
+            if isStopped {
+                self.stopButton.setTitle("再開", for: .normal)
+            } else {
+                self.stopButton.setTitle("一時停止", for: .normal)
+            }
+        }
+        )
     }
     
     @IBAction fileprivate func reset() {
