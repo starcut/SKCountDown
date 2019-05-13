@@ -19,10 +19,8 @@ public enum TimeStyle: UInt {
     case month                  /** 残り月数を表示する（日数以下切り捨て） */
     case year                   /** 残り年数を表示する（月数以下切り捨て） */
     case full                   /** 残り時間を年数からミリ秒までそれぞれの単位を分けて表示する */
-    case digital                /** HH:mm:ssの形式で表示する */
-    case digitalFull            /** HH:mm:ss.SSSの形式で表示する */
-    case digitalDateTime        /** YY/MM/dd HH:mm:ssの形式で表示する */
-    case digitalDateTimeFull    /** YY/MM/dd HH:mm:ss.SSSの形式で表示する */
+    case digital                /** YY/MM/dd HH:mm:ssの形式で表示する */
+    case digitalFull            /** YY/MM/dd HH:mm:ss.SSSの形式で表示する */
 }
 
 /** 表示する時間のスタイル */
@@ -40,13 +38,9 @@ open class SKCountDownLabel: UILabel {
     /** 時間の表示形式 */
     open var timeStyle: TimeStyle = .defaultStyle {
         didSet {
-            if self.milliSecond > 0 {
-                self.updateTimeDisplay()
-            }
+            self.updateTimeDisplay()
         }
     }
-    /** 最初に表示しておく文字列 */
-    open var initialText: String!
     /** 期日が来た時に表示する文字列 */
     open var timeupString: String = "時間切れ"
     /** 期日が近いと判定される残り時間 */
@@ -109,21 +103,6 @@ open class SKCountDownLabel: UILabel {
         self.commonInit()
     }
     
-    /**
-     * 指定された値が変更された時に呼ばれる処理
-     */
-    override open func observeValue(forKeyPath keyPath: String?,
-                                    of object: Any?,
-                                    change: [NSKeyValueChangeKey : Any]?,
-                                    context: UnsafeMutableRawPointer?) {
-        // 表示時間のスタイルが変更されたらスタイルを変更して再表示を行う
-        if keyPath == "initialText" {
-            if self.milliSecond == 0 {
-                self.text = self.initialText
-            }
-        }
-    }
-    
     // -------------------------------------------------------
     // MARK: Public Method
     // -------------------------------------------------------
@@ -138,20 +117,18 @@ open class SKCountDownLabel: UILabel {
     public func setDeadlineDate(selectedDate: Date,
                                 style: TimeStyle,
                                 identifier: String) {
+        if self.milliSecond > 0 {
+            return
+        }
+        
         self.commonInit()
         
         self.timerMode = .deadlineMode
-        let deadline: Date = SKDateFormat.createDateTime(date: selectedDate,
-                                                         identifier: identifier)
+        
         // Stringに変換した日付を使って期限設定
-        self.deadline = deadline
-        self.timeStyle = style
-        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                          target: self,
-                                          selector: #selector(updateRemainingTime),
-                                          userInfo: nil,
-                                          repeats: true
-        )
+        self.startCountDown(deadline: selectedDate,
+                            style: style,
+                            identifier: identifier)
     }
     
     /**
@@ -169,6 +146,10 @@ open class SKCountDownLabel: UILabel {
                                      secondAhead: Int,
                                      style: TimeStyle,
                                      identifier: String) {
+        if self.milliSecond > 0 {
+            return
+        }
+        
         self.commonInit()
         
         self.timerMode = .timerMode
@@ -178,23 +159,27 @@ open class SKCountDownLabel: UILabel {
         addTime += minuteAhead * SECOND_MAX
         addTime += secondAhead
         // Stringに変換した日付を使って期限設定
-        let deadlineTemp = Date(timeInterval: TimeInterval(addTime), since: .init())
-        self.deadline = SKDateFormat.createDateTime(date: deadlineTemp, identifier: identifier)
-        self.timeStyle = style
-        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                          target: self,
-                                          selector: #selector(updateRemainingTime),
-                                          userInfo: nil,
-                                          repeats: true
-        )
+        let deadlineTemp = Date(timeInterval: TimeInterval(addTime),
+                                since: .init())
+        self.startCountDown(deadline: deadlineTemp,
+                            style: style,
+                            identifier: identifier)
     }
     
     /**
      * カウントダウンの一時停止、再開を切り替える
      * ただし、日付指定のカウントダウンの場合はこのメソッドは無効
+     *
+     * - Parameters:
+     *   - isStopedTimer:   タイマーが止まっているかどうか
      */
     public func switchMovingTimer(isStopedTimer: Bool) {
+        // タイマーモードでない場合は一時停止させない
         if self.timerMode != .timerMode {
+            return
+        }
+        // 残り時間が0、つまりタイマーをセットしていない場合は一時停止の切り替えさせない
+        if self.milliSecond == 0 {
             return
         }
         
@@ -231,6 +216,7 @@ open class SKCountDownLabel: UILabel {
     public func resetTimer() {
         self.commonInit()
     }
+    
     // -------------------------------------------------------
     // MARK: File Private Method
     // -------------------------------------------------------
@@ -240,24 +226,52 @@ open class SKCountDownLabel: UILabel {
     fileprivate func commonInit() {
         self.milliSecond = .zero
         self.deadline = .init()
-        if self.initialText == nil {
-            self.initialText = self.changeTimeStyle()
-            self.text = self.changeTimeStyle()
-        }
-        self.text = self.initialText
+        
+        self.text = self.changeTimeStyle()
         
         if self.timer != nil {
             self.timer.invalidate()
         }
         
-        self.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: self.font.pointSize)!
         self.adjustsFontSizeToFitWidth = true
         self.textColor = .black
-        
-        if self.observationInfo != nil {
-            self.removeObserver(self, forKeyPath: "initialText")
+    }
+    
+    /**
+     * 期日を設定してカウントダウンを開始する
+     *
+     * - Parameters:
+     *   - deadline:    期日
+     *   - style:       時間の表示スタイル
+     *   - identifier:  地域の識別子
+     */
+    fileprivate func startCountDown(deadline: Date,
+                                    style: TimeStyle,
+                                    identifier: String) {
+        self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
+        // 期日が過去の日時だった場合、カウントダウンさせない
+        if self.isSettedPast(date: self.deadline) {
+            return
         }
-        self.addObserver(self, forKeyPath: "initialText", options: [.new], context: nil)
+        self.timeStyle = style
+        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
+                                          target: self,
+                                          selector: #selector(updateRemainingTime),
+                                          userInfo: nil,
+                                          repeats: true
+        )
+    }
+    
+    /**
+     * 指定した日時が過去かどうか
+     *
+     * - Parameters:
+     *   - date:    過去の日付か判定する上で基準となる日時
+     * - Returns:   過去の日付かどうか
+     */
+    fileprivate func isSettedPast(date: Date) -> Bool {
+        return self.deadline.compare(.init()) == .orderedAscending ||
+               self.deadline.compare(.init()) == .orderedSame
     }
     
     /**
@@ -278,9 +292,14 @@ open class SKCountDownLabel: UILabel {
             self.text = self.timeupString
             return
         }
-        
-        // 残り時間が少なくなったら赤文字表示
-        if self.milliSecond <= self.deadlineNearTime {
+        // タイマーが動いていない場合、時間の表示形式だけ変更して処理を中断する
+        if self.isSettedPast(date: self.deadline) {
+            self.deadline = .init()
+            self.text = self.changeTimeStyle()
+            return
+        }
+        // カウントダウンしていって残り時間が少なくなったら赤文字表示
+        if self.milliSecond < self.deadlineNearTime && self.milliSecond > 0 {
             self.textColor = .red
         }
         
@@ -306,17 +325,17 @@ open class SKCountDownLabel: UILabel {
         case .milliSecond:
             return String(format: STRING_FORMAT_ONLY_MILLISECOND, self.milliSecond)
         case .second:
-            return String(format: STRING_FORMAT_ONLY_SECOND, Int(floor(self.milliSecond)))
+            return String(format: STRING_FORMAT_ONLY_SECOND, Int(self.milliSecond))
         case .minute:
-            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 60),
+            return self.displayIncludeLessThan(remainingTime: Int(self.milliSecond / 60),
                                                timeStyle: .minute,
                                                milliSecond: self.milliSecond)
         case .hour:
-            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / 3600),
+            return self.displayIncludeLessThan(remainingTime: Int(self.milliSecond / 3600),
                                                timeStyle: .hour,
                                                milliSecond: self.milliSecond)
         case .day:
-            return self.displayIncludeLessThan(remainingTime: Int(floor(self.milliSecond) / (3600 * 24)),
+            return self.displayIncludeLessThan(remainingTime: Int(self.milliSecond / (3600 * 24)),
                                                timeStyle: .day,
                                                milliSecond: self.milliSecond)
         case .month:
@@ -334,23 +353,6 @@ open class SKCountDownLabel: UILabel {
                                                       components.nanosecond! / 1000000))
             return String(remainingString)
         case .digital:
-            if self.timerMode == .deadlineMode && !self.isLessThanDay(diffDateComponents: components) {
-                return ErrorText.canUseOnlyTimerMode.rawValue
-            }
-            return String(format: STRING_FORMAT_SECOND_DIGITAL,
-                          components.hour!,
-                          components.minute!,
-                          components.second!)
-        case .digitalFull:
-            if self.timerMode == .deadlineMode && !self.isLessThanDay(diffDateComponents: components) {
-                return ErrorText.canUseOnlyTimerMode.rawValue
-            }
-            return String(format: STRING_FORMAT_MILLISECOND_DIGITAL,
-                        components.hour!,
-                          components.minute!,
-                          components.second!,
-                          components.nanosecond! / 1000000)
-        case .digitalDateTime:
             if self.isLessThanDay(diffDateComponents: components) {
                 return String(format: STRING_FORMAT_SECOND_DIGITAL,
                               components.hour!,
@@ -364,7 +366,7 @@ open class SKCountDownLabel: UILabel {
                           components.hour!,
                           components.minute!,
                           components.second!)
-        case .digitalDateTimeFull:
+        case .digitalFull:
             if self.isLessThanDay(diffDateComponents: components) {
                 return String(format: STRING_FORMAT_MILLISECOND_DIGITAL,
                               components.hour!,
@@ -386,7 +388,7 @@ open class SKCountDownLabel: UILabel {
     /**
      * 残り時間が1日あるかチェックする
      *
-     * - Returns:   残り時間が1日以上ある
+     * - Returns:   残り時間が1日以上あるかどうか
      */
     fileprivate func isLessThanDay(diffDateComponents: DateComponents) -> Bool {
         return (diffDateComponents.year! == 0 && diffDateComponents.month! == 0 && diffDateComponents.day! == 0)

@@ -68,10 +68,10 @@
                                 <rect key="frame" x="20" y="485" width="374" height="361"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="wjP-0K-fGY">
-                                        <rect key="frame" x="0.0" y="0.0" width="374" height="72"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="90.5"/>
                                         <subviews>
                                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AnJ-Jr-Rce">
-                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="72"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90.5"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="defaultStyle"/>
                                                 <connections>
@@ -79,7 +79,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hId-SP-gPB">
-                                                <rect key="frame" x="124.5" y="0.0" width="125" height="72"/>
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90.5"/>
                                                 <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="milliSecond"/>
                                                 <connections>
@@ -87,7 +87,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myx-2y-9br">
-                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="72"/>
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90.5"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="second"/>
                                                 <connections>
@@ -97,10 +97,10 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="UwR-Sk-sgL">
-                                        <rect key="frame" x="0.0" y="72" width="374" height="72.5"/>
+                                        <rect key="frame" x="0.0" y="90.5" width="374" height="90"/>
                                         <subviews>
                                             <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q9s-tu-vXu">
-                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="72.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90"/>
                                                 <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="minute"/>
                                                 <connections>
@@ -108,7 +108,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEi-fp-jh7">
-                                                <rect key="frame" x="124.5" y="0.0" width="125" height="72.5"/>
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="hour"/>
                                                 <connections>
@@ -116,7 +116,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BZL-Nx-9ir">
-                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="72.5"/>
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90"/>
                                                 <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="day"/>
                                                 <connections>
@@ -126,10 +126,10 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xcK-gl-ufF">
-                                        <rect key="frame" x="0.0" y="144.5" width="374" height="72"/>
+                                        <rect key="frame" x="0.0" y="180.5" width="374" height="90.5"/>
                                         <subviews>
                                             <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XF8-uh-awc">
-                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="72"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90.5"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="month"/>
                                                 <connections>
@@ -137,7 +137,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BtW-qn-ylz">
-                                                <rect key="frame" x="124.5" y="0.0" width="125" height="72"/>
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90.5"/>
                                                 <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="year"/>
                                                 <connections>
@@ -145,7 +145,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8bG-2v-mIf">
-                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="72"/>
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90.5"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="full"/>
                                                 <connections>
@@ -155,10 +155,10 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="QLJ-we-mjr">
-                                        <rect key="frame" x="0.0" y="216.5" width="374" height="72.5"/>
+                                        <rect key="frame" x="0.0" y="271" width="374" height="90"/>
                                         <subviews>
                                             <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HVg-W4-JUR">
-                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="72.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="187" height="90"/>
                                                 <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="digital"/>
                                                 <connections>
@@ -166,32 +166,11 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3fF-aY-yBS">
-                                                <rect key="frame" x="124.5" y="0.0" width="125" height="72.5"/>
+                                                <rect key="frame" x="187" y="0.0" width="187" height="90"/>
                                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="digitalFull"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ouv-zg-GnY"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a0A-DN-P0p">
-                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="72.5"/>
-                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="digitalDateTime"/>
-                                                <connections>
-                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mq2-7Y-qSq"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5mg-Ci-yDf">
-                                        <rect key="frame" x="0.0" y="289" width="374" height="72"/>
-                                        <subviews>
-                                            <button opaque="NO" tag="13" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WWe-zz-elP">
-                                                <rect key="frame" x="0.0" y="0.0" width="374" height="72"/>
-                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="digitalDateTimeFull"/>
-                                                <connections>
-                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7FU-vc-aYO"/>
                                                 </connections>
                                             </button>
                                         </subviews>

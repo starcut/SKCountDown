@@ -61,7 +61,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         
         self.countDownPicker.delegate = self
         self.countDownPicker.dataSource = self
-        self.countDownLabel.initialText = "停止中"
         
         for hour in 0 ..< HOUR_MAX {
             self.timeItem[0].append(hour)
@@ -143,10 +142,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             self.countDownLabel.timeStyle = .digital
         case 11:
             self.countDownLabel.timeStyle = .digitalFull
-        case 12:
-            self.countDownLabel.timeStyle = .digitalDateTime
-        case 13:
-            self.countDownLabel.timeStyle = .digitalDateTimeFull
         default:
             self.countDownLabel.timeStyle = .milliSecond
         }

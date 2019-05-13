@@ -19,7 +19,7 @@ open class SKDateFormat: NSObject {
      */
     public static func createDateTimeString(date: Date, identifier: String) -> String {
         let formatter:DateFormatter = DateFormatter()
-        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss",
+        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss.SSS",
                                                         options: 0,
                                                         locale: Locale(identifier: identifier))
         return formatter.string(from: date)
@@ -35,7 +35,7 @@ open class SKDateFormat: NSObject {
      */
     public static func createDateTime(date: Date, identifier: String) -> Date {
         let formatter:DateFormatter = DateFormatter()
-        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss",
+        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss.SSS",
                                                         options: 0,
                                                         locale: Locale(identifier: identifier))
         return formatter.date(from: formatter.string(from: date))!
@@ -51,7 +51,7 @@ open class SKDateFormat: NSObject {
      */
     public static func createDateTimeByString(string: String, identifier: String) -> Date {
         let formatter:DateFormatter = DateFormatter()
-        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss",
+        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "YYYY/MM/dd HH:mm:ss.SSS",
                                                         options: 0,
                                                         locale: Locale(identifier: identifier))
         return formatter.date(from: string)!
