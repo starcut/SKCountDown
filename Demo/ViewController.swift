@@ -20,6 +20,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     fileprivate var selectedMinute: Int = 0
     fileprivate var selectedSecond: Int = 0
     
+    @IBOutlet fileprivate weak var countDownLabel: SKCountDownLabel!
+    @IBOutlet fileprivate weak var datePicker: UIDatePicker!
+    @IBOutlet fileprivate weak var countDownPicker: UIPickerView!
+    @IBOutlet fileprivate weak var segmentControl: UISegmentedControl!
+    @IBOutlet fileprivate weak var stopButton: UIButton!
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 3
     }
@@ -47,11 +53,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             break
         }
     }
-    
-    @IBOutlet private weak var countDownLabel: SKCountDownLabel!
-    @IBOutlet private weak var datePicker: UIDatePicker!
-    @IBOutlet private weak var countDownPicker: UIPickerView!
-    @IBOutlet private weak var segmentControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,6 +88,26 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         self.countDownLabel.timeupString = "お疲れ様でした"
     }
     
+    @IBAction fileprivate func switchMovingTimer() {
+        // タイマーがスタートしていない場合は一時停止ボタンは動作させない
+        if self.countDownLabel.getRemainingTime() <= 0 {
+            return
+        }
+        
+        self.countDownLabel.switchMovingTimer(completion: {(isStopped: Bool) in
+            if isStopped {
+                self.stopButton.setTitle("再開", for: .normal)
+            } else {
+                self.stopButton.setTitle("一時停止", for: .normal)
+            }
+        }
+        )
+    }
+    
+    @IBAction fileprivate func reset() {
+        self.countDownLabel.resetTimer()
+    }
+    
     @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {
         switch segmentControl.selectedSegmentIndex {
         case 0:
@@ -103,23 +124,27 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     @IBAction fileprivate func changeTimeStyle(button: UIButton) {
         switch button.tag {
         case 1:
-            self.countDownLabel.timeStyle = .milliSecond
-        case 2:
-            self.countDownLabel.timeStyle = .second
-        case 3:
-            self.countDownLabel.timeStyle = .minute
-        case 4:
-            self.countDownLabel.timeStyle = .hour
-        case 5:
-            self.countDownLabel.timeStyle = .day
-        case 6:
-            self.countDownLabel.timeStyle = .month
-        case 7:
-            self.countDownLabel.timeStyle = .year
-        case 8:
-            self.countDownLabel.timeStyle = .full
-        case 9:
             self.countDownLabel.timeStyle = .defaultStyle
+        case 2:
+            self.countDownLabel.timeStyle = .milliSecond
+        case 3:
+            self.countDownLabel.timeStyle = .second
+        case 4:
+            self.countDownLabel.timeStyle = .minute
+        case 5:
+            self.countDownLabel.timeStyle = .hour
+        case 6:
+            self.countDownLabel.timeStyle = .day
+        case 7:
+            self.countDownLabel.timeStyle = .month
+        case 8:
+            self.countDownLabel.timeStyle = .year
+        case 9:
+            self.countDownLabel.timeStyle = .full
+        case 10:
+            self.countDownLabel.timeStyle = .digital
+        case 11:
+            self.countDownLabel.timeStyle = .digitalFull
         default:
             self.countDownLabel.timeStyle = .milliSecond
         }

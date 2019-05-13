@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="kvy-az-ve3">
-                                <rect key="frame" x="0.0" y="103" width="414" height="216"/>
+                                <rect key="frame" x="0.0" y="92" width="414" height="216"/>
                                 <subviews>
                                     <pickerView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x0q-Zk-1oj">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
@@ -34,7 +34,7 @@
                                 </subviews>
                             </stackView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="WWw-Ed-gdE">
-                                <rect key="frame" x="138.5" y="337" width="137" height="29"/>
+                                <rect key="frame" x="19" y="326" width="137" height="29"/>
                                 <segments>
                                     <segment title="日付指定"/>
                                     <segment title="タイマー"/>
@@ -44,7 +44,7 @@
                                 </connections>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f2D-xS-XL6">
-                                <rect key="frame" x="40" y="383" width="334" height="30"/>
+                                <rect key="frame" x="40" y="372" width="334" height="30"/>
                                 <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal" title="start"/>
                                 <connections>
@@ -52,142 +52,174 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lRP-9A-Vbv" customClass="SKCountDownLabel" customModule="Demo" customModuleProvider="target">
-                                <rect key="frame" x="186" y="438" width="42" height="20.5"/>
+                                <rect key="frame" x="163" y="427" width="88.5" height="42"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Label">
                                         <attributes>
-                                            <font key="NSFont" metaFont="system" size="17"/>
+                                            <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <font key="NSFont" size="36" name=".SFNSText"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ih6-X9-Cc9">
-                                <rect key="frame" x="21" y="474.5" width="372" height="371.5"/>
+                                <rect key="frame" x="20" y="485" width="374" height="361"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="wjP-0K-fGY">
-                                        <rect key="frame" x="0.0" y="0.0" width="372" height="123.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="90.5"/>
                                         <subviews>
-                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hId-SP-gPB">
-                                                <rect key="frame" x="0.0" y="0.0" width="124" height="123.5"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="hId-SP-gPB" secondAttribute="height" multiplier="1:1" id="Yei-sm-dvX"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AnJ-Jr-Rce">
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90.5"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <state key="normal" title="defaultStyle"/>
+                                                <connections>
+                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="B3B-qg-gWh"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hId-SP-gPB">
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90.5"/>
+                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="milliSecond"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zAs-Ar-KtY"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myx-2y-9br">
-                                                <rect key="frame" x="124" y="0.0" width="124" height="123.5"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="Myx-2y-9br" secondAttribute="height" multiplier="1:1" id="llr-JQ-Wro"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myx-2y-9br">
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90.5"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="second"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lqB-J3-Quo"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q9s-tu-vXu">
-                                                <rect key="frame" x="248" y="0.0" width="124" height="123.5"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="q9s-tu-vXu" secondAttribute="height" multiplier="1:1" id="sje-Eg-jgs"/>
-                                                </constraints>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="UwR-Sk-sgL">
+                                        <rect key="frame" x="0.0" y="90.5" width="374" height="90"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q9s-tu-vXu">
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90"/>
+                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="minute"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6OV-Ff-gYe"/>
                                                 </connections>
                                             </button>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="UwR-Sk-sgL">
-                                        <rect key="frame" x="0.0" y="123.5" width="372" height="124"/>
-                                        <subviews>
-                                            <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEi-fp-jh7">
-                                                <rect key="frame" x="0.0" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="SEi-fp-jh7" secondAttribute="height" multiplier="1:1" id="Nle-OD-pSK"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEi-fp-jh7">
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="hour"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z98-PV-UkX"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BZL-Nx-9ir">
-                                                <rect key="frame" x="124" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="BZL-Nx-9ir" secondAttribute="height" multiplier="1:1" id="t1k-Xs-HHI"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BZL-Nx-9ir">
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90"/>
+                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="day"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ByI-ha-etP"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XF8-uh-awc">
-                                                <rect key="frame" x="248" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="XF8-uh-awc" secondAttribute="height" multiplier="1:1" id="qLL-M4-qwM"/>
-                                                </constraints>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xcK-gl-ufF">
+                                        <rect key="frame" x="0.0" y="180.5" width="374" height="90.5"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XF8-uh-awc">
+                                                <rect key="frame" x="0.0" y="0.0" width="124.5" height="90.5"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="month"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pyP-p2-XJx"/>
                                                 </connections>
                                             </button>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xcK-gl-ufF">
-                                        <rect key="frame" x="0.0" y="247.5" width="372" height="124"/>
-                                        <subviews>
-                                            <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BtW-qn-ylz">
-                                                <rect key="frame" x="0.0" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="BtW-qn-ylz" secondAttribute="height" multiplier="1:1" id="AFK-sf-LCc"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BtW-qn-ylz">
+                                                <rect key="frame" x="124.5" y="0.0" width="125" height="90.5"/>
+                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="year"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pvh-4V-jse"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8bG-2v-mIf">
-                                                <rect key="frame" x="124" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="8bG-2v-mIf" secondAttribute="height" multiplier="1:1" id="La3-0D-1p5"/>
-                                                </constraints>
+                                            <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8bG-2v-mIf">
+                                                <rect key="frame" x="249.5" y="0.0" width="124.5" height="90.5"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="full"/>
                                                 <connections>
                                                     <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z8p-UD-fgm"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AnJ-Jr-Rce">
-                                                <rect key="frame" x="248" y="0.0" width="124" height="124"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="AnJ-Jr-Rce" secondAttribute="height" multiplier="1:1" id="D93-g7-pp5"/>
-                                                </constraints>
-                                                <state key="normal" title="defaultStyle"/>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="QLJ-we-mjr">
+                                        <rect key="frame" x="0.0" y="271" width="374" height="90"/>
+                                        <subviews>
+                                            <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HVg-W4-JUR">
+                                                <rect key="frame" x="0.0" y="0.0" width="187" height="90"/>
+                                                <color key="backgroundColor" red="0.72019626420000005" green="1" blue="0.9839149264" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <state key="normal" title="digital"/>
                                                 <connections>
-                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="B3B-qg-gWh"/>
+                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uzT-Wb-Kza"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3fF-aY-yBS">
+                                                <rect key="frame" x="187" y="0.0" width="187" height="90"/>
+                                                <color key="backgroundColor" red="0.81337443119999997" green="1" blue="0.86920383130000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <state key="normal" title="digitalFull"/>
+                                                <connections>
+                                                    <action selector="changeTimeStyleWithButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ouv-zg-GnY"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dhz-1a-HPX">
+                                <rect key="frame" x="176" y="325" width="62" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="62" id="h2c-et-SaH"/>
+                                </constraints>
+                                <state key="normal" title="一時停止"/>
+                                <connections>
+                                    <action selector="switchMovingTimer" destination="BYZ-38-t0r" eventType="touchUpInside" id="2d9-rN-kaR"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pyZ-fl-j8y">
+                                <rect key="frame" x="258" y="325" width="62" height="30"/>
+                                <state key="normal" title="リセット"/>
+                                <connections>
+                                    <action selector="reset" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z44-Vg-lqC"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4Bq-1v-P6q"/>
-                            <constraint firstItem="f2D-xS-XL6" firstAttribute="top" secondItem="WWw-Ed-gdE" secondAttribute="bottom" constant="18" id="CaH-rf-duf"/>
-                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="top" secondItem="kvy-az-ve3" secondAttribute="bottom" constant="18" id="CeJ-u9-Asq"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="top" secondItem="kvy-az-ve3" secondAttribute="bottom" constant="17" id="5t5-9H-AMI"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pyZ-fl-j8y" secondAttribute="trailing" constant="8" id="8b4-FZ-G6a"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="leading" secondItem="WWw-Ed-gdE" secondAttribute="trailing" constant="20" id="EYE-e8-eQr"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f2D-xS-XL6" secondAttribute="trailing" constant="40" id="IjT-1x-NkN"/>
+                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="M3o-lN-1XR"/>
+                            <constraint firstItem="lRP-9A-Vbv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="Mlv-cL-tEE"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="top" secondItem="f2D-xS-XL6" secondAttribute="bottom" constant="25" id="Seq-L0-QnP"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WI1-gV-9C2"/>
+                            <constraint firstItem="pyZ-fl-j8y" firstAttribute="centerY" secondItem="dhz-1a-HPX" secondAttribute="centerY" id="Xyw-0P-kxb"/>
                             <constraint firstItem="kvy-az-ve3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="bck-ii-ya5"/>
-                            <constraint firstItem="WWw-Ed-gdE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="e4k-Wg-zMC"/>
+                            <constraint firstItem="pyZ-fl-j8y" firstAttribute="leading" secondItem="dhz-1a-HPX" secondAttribute="trailing" constant="20" id="cIX-aw-mMI"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="centerY" secondItem="WWw-Ed-gdE" secondAttribute="centerY" id="cT6-72-Tcv"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lRP-9A-Vbv" secondAttribute="trailing" constant="8" id="cVx-GQ-jUc"/>
+                            <constraint firstItem="ih6-X9-Cc9" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="ced-AZ-OnL"/>
                             <constraint firstItem="lRP-9A-Vbv" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="h8C-IP-PhK"/>
+                            <constraint firstItem="f2D-xS-XL6" firstAttribute="top" secondItem="dhz-1a-HPX" secondAttribute="bottom" constant="17" id="jys-Ys-R3U"/>
                             <constraint firstItem="ih6-X9-Cc9" firstAttribute="top" secondItem="lRP-9A-Vbv" secondAttribute="bottom" constant="16" id="m40-5o-zPE"/>
                             <constraint firstItem="ih6-X9-Cc9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mGa-1s-C7l"/>
                             <constraint firstItem="f2D-xS-XL6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="40" id="nWS-lm-z7e"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="ih6-X9-Cc9" secondAttribute="bottom" constant="16" id="oQe-rv-LXE"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ih6-X9-Cc9" secondAttribute="trailing" constant="20" id="qmd-cr-RL1"/>
+                            <constraint firstItem="dhz-1a-HPX" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="tM4-5V-4G9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -196,6 +228,7 @@
                         <outlet property="countDownPicker" destination="x0q-Zk-1oj" id="gBM-gw-eZt"/>
                         <outlet property="datePicker" destination="fa0-xB-jx9" id="Khc-xp-RbE"/>
                         <outlet property="segmentControl" destination="WWw-Ed-gdE" id="nks-NG-VrP"/>
+                        <outlet property="stopButton" destination="dhz-1a-HPX" id="aE4-WT-IR2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
