@@ -8,6 +8,7 @@
 
 import UIKit
 import SKCountDown
+import AudioToolbox
 
 class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     fileprivate var timeItem: [[Int]] = [[],[],[]]
@@ -21,6 +22,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     fileprivate var selectedSecond: Int = 0
     
     @IBOutlet fileprivate weak var countDownLabel: SKCountDownLabel!
+    @IBOutlet fileprivate weak var rateLabel: UILabel!
     @IBOutlet fileprivate weak var datePicker: UIDatePicker!
     @IBOutlet fileprivate weak var countDownPicker: UIPickerView!
     @IBOutlet fileprivate weak var segmentControl: UISegmentedControl!
@@ -80,12 +82,28 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             self.countDownLabel.setDeadlineCountDown(hourAhead: selectedHour,
                                                      minuteAhead: selectedMinute,
                                                      secondAhead: selectedSecond,
+                                                     countDownMode: .timerMode,
                                                      style: .full,
                                                      identifier: self.datePicker.locale!.identifier)
         }
         
-        self.countDownLabel.deadlineNearTime = 60
+        self.countDownLabel.nearDeadlineTime = 60
         self.countDownLabel.timeupString = "お疲れ様でした"
+        // 時間を更新のたびに行う処理
+        self.countDownLabel.processInUpdatingTimer = {
+            self.rateLabel.text = String(format: "%06.3f", self.countDownLabel.getProgressRate())
+        }
+        // 残り時間がnearDeadlineTimeを下回った時の処理
+        self.countDownLabel.processInNearDeadline = {
+            self.countDownLabel.textColor = .orange
+            // 初回のバイブレーションを鳴らす
+            AudioServicesPlaySystemSound(1011)
+        }
+        // 期日が来た時に行う処理
+        self.countDownLabel.processInDeadline = {
+            self.countDownLabel.textColor = .red
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        }
     }
     
     @IBAction fileprivate func switchMovingTimer() {
