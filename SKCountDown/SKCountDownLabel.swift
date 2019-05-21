@@ -209,8 +209,8 @@ open class SKCountDownLabel: UILabel {
             // 一時停止状態にする
             self.countDownStatus = .pause
             self.timer.invalidate()
-        case .pause:
-            // 一時停止状態から動作状態にする
+        default:
+            // 停止状態から動作状態にする
             self.countDownStatus = .playing
             self.deadline = Date().addingTimeInterval(self.milliSecond)
             self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
@@ -218,8 +218,6 @@ open class SKCountDownLabel: UILabel {
                                               selector: #selector(updateRemainingTime),
                                               userInfo: nil,
                                               repeats: true)
-        case .stopped:
-            return
         }
         completion(self.countDownStatus)
     }
