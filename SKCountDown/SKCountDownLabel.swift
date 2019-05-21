@@ -87,6 +87,8 @@ open class SKCountDownLabel: UILabel {
     fileprivate var startDate: Date = .init()
     /** 期日 */
     fileprivate var deadline: Date = .init()
+    /** 初期状態の残り時間 */
+    fileprivate var initialRemainingTime: Double = 0
     /** タイマー */
     fileprivate var timer: Timer!
     /** 残り時間 */
@@ -97,10 +99,6 @@ open class SKCountDownLabel: UILabel {
     }
     /** カウントダウンの形式 */
     fileprivate(set) var countDownMode: CountDownMode = .deadlineMode
-    /** 一時停止した時間 */
-    fileprivate var stopTime: Date = .init()
-    /** 一時停止を解除した時間 */
-    fileprivate var restartTime: Date = .init()
     
     // -------------------------------------------------------
     // MARK: Override Method
@@ -203,15 +201,8 @@ open class SKCountDownLabel: UILabel {
         // 動いているときはタイマーを止める
         if isStoppedTimer {
             self.timer.invalidate()
-            // 一時停止させた時刻を記録
-            self.stopTime = .init()
         } else {
-            // 一時停止を解除した時刻を記録し、一時停止させていた時間を算出
-            self.restartTime = .init()
-            let stopInterval: Double = self.restartTime.timeIntervalSince(self.stopTime)
-            // 一時停止させていた分だけ期限を延ばす
-            self.startDate = self.startDate.addingTimeInterval(stopInterval)
-            self.deadline = self.deadline.addingTimeInterval(stopInterval)
+            self.deadline = Date().addingTimeInterval(self.milliSecond)
             self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                               target: self,
                                               selector: #selector(updateRemainingTime),
@@ -245,14 +236,12 @@ open class SKCountDownLabel: UILabel {
     }
     
     /**
-     * 経過率を取得する
+     * 残り時間の割合を取得する
      *
-     * - Returns:   経過率[％]
+     * - Returns:   残り時間の割合[％]
      */
     public func getProgressRate() -> Double {
-        let entire: Double = self.deadline.timeIntervalSince(self.startDate)
-        let progress: Double = Date.init().timeIntervalSince(self.startDate)
-        return (progress / entire) * 100
+        return (1 - (self.milliSecond / self.initialRemainingTime)) * 100
     }
     
     // -------------------------------------------------------
@@ -300,8 +289,10 @@ open class SKCountDownLabel: UILabel {
                                     identifier: String) {
         self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: identifier)
         self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
+        self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
         // 期日が過去の日時だった場合、カウントダウンさせない
         if self.isSettedPast(date: self.deadline) {
+            self.initialRemainingTime = 0
             return
         }
         self.isStoppedTimer = false
