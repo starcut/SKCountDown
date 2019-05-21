@@ -112,14 +112,16 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             return
         }
         
-        self.countDownLabel.switchMovingTimer(completion: {(isStopped: Bool) in
-            if isStopped {
-                self.stopButton.setTitle("再開", for: .normal)
-            } else {
+        self.countDownLabel.switchMovingTimer(completion: {(isStopped: CountDownStatus) in
+            switch isStopped {
+            case .playing:
                 self.stopButton.setTitle("一時停止", for: .normal)
+            case .pause:
+                self.stopButton.setTitle("再開", for: .normal)
+            case .stopped:
+                return
             }
-        }
-        )
+        })
     }
     
     @IBAction fileprivate func reset() {

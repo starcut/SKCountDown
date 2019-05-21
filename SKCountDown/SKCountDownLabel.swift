@@ -30,6 +30,13 @@ public enum CountDownMode: UInt {
     case timerMode          /** タイマー形式のカウントダウンモード */
 }
 
+/** カウントダウンの状態 */
+public enum CountDownStatus: UInt {
+    case playing = 0        /** タイマーが動いている状態 */
+    case pause              /** タイマーが一時停止している状態 */
+    case stopped            /** タイマーが止まっている状態 */
+}
+
 /** エラーメッセージ */
 fileprivate enum ErrorText: String {
     case canUseOnlyTimerMode = "タイマーモードでのみ表示可能"
@@ -82,7 +89,7 @@ open class SKCountDownLabel: UILabel {
     /** 表示する時間のタイムインターバル */
     fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** タイマーが止まっているかどうか */
-    fileprivate(set) var isStoppedTimer = true
+    fileprivate(set) var countDownStatus: CountDownStatus = .stopped
     /** 開始日時 */
     fileprivate var startDate: Date = .init()
     /** 期日 */
@@ -127,7 +134,7 @@ open class SKCountDownLabel: UILabel {
     public func setDeadlineDate(selectedDate: Date,
                                 style: TimeStyle,
                                 identifier: String) {
-        if self.milliSecond > 0 {
+        if self.countDownStatus != .stopped {
             return
         }
         
@@ -156,7 +163,7 @@ open class SKCountDownLabel: UILabel {
                                      countDownMode: CountDownMode,
                                      style: TimeStyle,
                                      identifier: String) {
-        if self.milliSecond > 0 {
+        if self.countDownStatus != .stopped {
             return
         }
         
@@ -185,7 +192,7 @@ open class SKCountDownLabel: UILabel {
      * - Parameters:
      *   - isStopedTimer:   タイマーが止まっているかどうか
      */
-    public func switchMovingTimer(completion:(Bool) -> ()) {
+    public func switchMovingTimer(completion:(CountDownStatus) -> ()) {
         // 残り時間が0、つまりタイマーをセットしていない場合は一時停止の切り替えさせない
         if self.milliSecond <= 0 {
             self.timer.invalidate()
@@ -197,26 +204,42 @@ open class SKCountDownLabel: UILabel {
             return
         }
         
-        self.isStoppedTimer = !self.isStoppedTimer
-        // 動いているときはタイマーを止める
-        if isStoppedTimer {
+        switch self.countDownStatus {
+        case .playing:
+            // 一時停止状態にする
+            self.countDownStatus = .pause
             self.timer.invalidate()
-        } else {
+        case .pause:
+            // 一時停止状態から動作状態にする
+            self.countDownStatus = .playing
             self.deadline = Date().addingTimeInterval(self.milliSecond)
             self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                               target: self,
                                               selector: #selector(updateRemainingTime),
                                               userInfo: nil,
                                               repeats: true)
+        case .stopped:
+            return
         }
-        completion(self.isStoppedTimer)
+        completion(self.countDownStatus)
     }
     
     /**
      * タイマーをリセットする
      */
     public func resetTimer() {
-        self.commonInit()
+        switch self.countDownMode {
+        case .deadlineMode:
+            self.commonInit()
+        case .timerMode:
+            self.timer.invalidate()
+            self.countDownStatus = .stopped
+            self.milliSecond = self.initialRemainingTime
+            self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP")
+            self.deadline = self.startDate.addingTimeInterval(self.initialRemainingTime)
+            self.updateTimeDisplay()
+        }
+        
     }
     
     /**
@@ -228,11 +251,11 @@ open class SKCountDownLabel: UILabel {
     }
     
     /**
-     * 現在タイマーが止まっているかどうかを取得する
+     * 現在タイマーのタイマーの動作状態を取得する
      * - Returns:   タイマーが止まっているかどうか
      */
-    public func isStoppeTimer() -> Bool {
-        return self.isStoppedTimer
+    public func getCountDownStatus() -> CountDownStatus {
+        return self.countDownStatus
     }
     
     /**
@@ -251,7 +274,7 @@ open class SKCountDownLabel: UILabel {
      * 共通の初期化事項
      */
     fileprivate func commonInit() {
-        self.isStoppedTimer = true
+        self.countDownStatus = .stopped
         
         self.milliSecond = .zero
         self.deadline = .init()
@@ -270,7 +293,6 @@ open class SKCountDownLabel: UILabel {
         self.processInDeadline = {
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
         }
-        
         
         self.adjustsFontSizeToFitWidth = true
         self.textColor = .black
@@ -295,7 +317,7 @@ open class SKCountDownLabel: UILabel {
             self.initialRemainingTime = 0
             return
         }
-        self.isStoppedTimer = false
+        self.countDownStatus = .playing
         self.timeStyle = style
         self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
                                           target: self,
@@ -359,9 +381,14 @@ open class SKCountDownLabel: UILabel {
      */
     fileprivate func changeTimeStyle() -> String {
         // 今から期日までの年数などを取得
+        let toDate: Date = SKDateFormat.createDateTime(date: self.deadline,
+                                                       identifier: "ja_JP")
+        let fromDate: Date = SKDateFormat.createDateTime(date: toDate.addingTimeInterval(-self.milliSecond),
+                                                         identifier: "ja_JP")
+        
         let components: DateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond],
-                                                                         from: Date(),
-                                                                         to: self.deadline)
+                                                                         from: fromDate,
+                                                                         to: toDate)
         switch self.timeStyle {
         case .defaultStyle:
             var remainingString: Substring = self.createDateTimeStringFromYearToMinute(diffDateComponents: components)
