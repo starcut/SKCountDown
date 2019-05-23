@@ -131,7 +131,8 @@ open class SKCountDownLabel: UILabel {
      *   - style:           時間の表示スタイル
      *   - identifier:      地域の識別子
      */
-    public func setDeadlineDate(selectedDate: Date,
+    public func setDeadlineDate(startDate: Date,
+                                deadline: Date,
                                 style: TimeStyle,
                                 identifier: String) {
         if self.countDownStatus != .stopped {
@@ -142,7 +143,8 @@ open class SKCountDownLabel: UILabel {
         
         self.countDownMode = .deadlineMode
         // Stringに変換した日付を使って期限設定
-        self.startCountDown(deadline: selectedDate,
+        self.startCountDown(startDate: startDate,
+                            deadline: deadline,
                             style: style,
                             identifier: identifier)
     }
@@ -179,8 +181,9 @@ open class SKCountDownLabel: UILabel {
         
         // Stringに変換した日付を使って期限設定
         let deadlineTemp = Date(timeInterval: TimeInterval(addTime),
-                                since: .init())
-        self.startCountDown(deadline: deadlineTemp,
+                                since: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"))
+        self.startCountDown(startDate: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"),
+                            deadline: deadlineTemp,
                             style: style,
                             identifier: identifier)
     }
@@ -304,10 +307,11 @@ open class SKCountDownLabel: UILabel {
      *   - style:       時間の表示スタイル
      *   - identifier:  地域の識別子
      */
-    fileprivate func startCountDown(deadline: Date,
+    fileprivate func startCountDown(startDate: Date,
+                                    deadline: Date,
                                     style: TimeStyle,
                                     identifier: String) {
-        self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: identifier)
+        self.startDate = SKDateFormat.createDateTime(date: startDate, identifier: identifier)
         self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
         self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
         // 期日が過去の日時だった場合、カウントダウンさせない
