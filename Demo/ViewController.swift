@@ -77,6 +77,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         if self.segmentControl.selectedSegmentIndex == 0 {
             self.countDownLabel.setDeadlineDate(startDate: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"),
                                                 deadline: self.datePicker.date,
+                                                countDownMode: .deadlineMode,
                                                 style: .full,
                                                 identifier: self.datePicker.locale!.identifier)
         } else {
