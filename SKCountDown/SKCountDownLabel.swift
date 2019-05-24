@@ -97,7 +97,7 @@ open class SKCountDownLabel: UILabel {
     /** 初期状態の残り時間 */
     fileprivate var initialRemainingTime: Double = 0
     /** タイマー */
-    fileprivate var timer: Timer!
+    fileprivate var timer: Timer?
     /** 残り時間 */
     fileprivate(set) var milliSecond: Double = .zero {
         didSet {
@@ -199,7 +199,7 @@ open class SKCountDownLabel: UILabel {
     public func switchMovingTimer(completion:(CountDownStatus) -> ()) {
         // 残り時間が0、つまりタイマーをセットしていない場合は一時停止の切り替えさせない
         if self.milliSecond <= 0 {
-            self.timer.invalidate()
+            self.timer?.invalidate()
             return
         }
         
@@ -212,7 +212,7 @@ open class SKCountDownLabel: UILabel {
         case .playing:
             // 一時停止状態にする
             self.countDownStatus = .pause
-            self.timer.invalidate()
+            self.timer?.invalidate()
         default:
             // 停止状態から動作状態にする
             self.countDownStatus = .playing
@@ -234,7 +234,7 @@ open class SKCountDownLabel: UILabel {
         case .deadlineMode:
             self.commonInit()
         case .timerMode:
-            self.timer.invalidate()
+            self.timer?.invalidate()
             self.countDownStatus = .stopped
             self.milliSecond = self.initialRemainingTime
             self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP")
@@ -283,9 +283,7 @@ open class SKCountDownLabel: UILabel {
         
         self.text = self.changeTimeStyle()
         
-        if self.timer != nil {
-            self.timer.invalidate()
-        }
+        self.timer?.invalidate()
         
         self.processInUpdatingTimer = nil
         self.processInNearDeadline = {
