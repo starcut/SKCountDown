@@ -134,6 +134,7 @@ open class SKCountDownLabel: UILabel {
     public func setDeadlineDate(startDate: Date,
                                 deadline: Date,
                                 countDownMode: CountDownMode,
+                                countDownStatus: CountDownStatus,
                                 style: TimeStyle,
                                 identifier: String) {
         if self.countDownStatus != .stopped {
@@ -143,6 +144,7 @@ open class SKCountDownLabel: UILabel {
         self.commonInit()
         
         self.countDownMode = countDownMode
+        self.countDownStatus = countDownStatus
         // Stringに変換した日付を使って期限設定
         self.startCountDown(startDate: startDate,
                             deadline: deadline,
@@ -318,14 +320,16 @@ open class SKCountDownLabel: UILabel {
             self.initialRemainingTime = 0
             return
         }
-        self.countDownStatus = .playing
         self.timeStyle = style
-        self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                          target: self,
-                                          selector: #selector(updateRemainingTime),
-                                          userInfo: nil,
-                                          repeats: true
-        )
+        if self.countDownStatus == .playing {
+            self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
+                                              target: self,
+                                              selector: #selector(updateRemainingTime),
+                                              userInfo: nil,
+                                              repeats: true)
+        } else {
+            self.milliSecond = self.initialRemainingTime
+        }
     }
     
     /**

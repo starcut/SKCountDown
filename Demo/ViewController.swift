@@ -78,6 +78,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             self.countDownLabel.setDeadlineDate(startDate: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"),
                                                 deadline: self.datePicker.date,
                                                 countDownMode: .deadlineMode,
+                                                countDownStatus: .pause,
                                                 style: .full,
                                                 identifier: self.datePicker.locale!.identifier)
         } else {
