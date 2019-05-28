@@ -59,6 +59,8 @@ open class SKCountDownLabel: UILabel {
     open var processInNearDeadline:(() -> Void)?
     /** 時間切れになった時に行う処理 */
     open var processInDeadline:(() -> Void)?
+    /** 時刻のロケーション */
+    open var dateLocation: String = "ja_JP"
     
     /** ミリ秒まで含めた秒のみ文字列のフォーマット */
     fileprivate let STRING_FORMAT_ONLY_MILLISECOND: String = "%.3f秒"
@@ -143,52 +145,41 @@ open class SKCountDownLabel: UILabel {
         
         self.commonInit()
         
+        self.startDate = SKDateFormat.createDateTime(date: startDate, identifier: identifier)
+        self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
         self.countDownMode = countDownMode
         self.countDownStatus = countDownStatus
+        self.timeStyle = style
+        switch self.countDownMode {
+        case .deadlineMode:
+            self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
+        case .timerMode:
+            self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
+        }
+        
         // Stringに変換した日付を使って期限設定
-        self.startCountDown(startDate: startDate,
-                            deadline: deadline,
-                            style: style,
-                            identifier: identifier)
+        self.startCountDown()
     }
     
     /**
-     * カウントダウン形式での期日設定
-     *
-     * - Parameters:
-     *   - hourAhead:   現時刻から何時間先か
-     *   - minuteAhead: 現時刻から何分先か
-     *   - secondAhead: 現時刻から何秒先か
-     *   - style:       時間の表示スタイル
-     *   - identifier:  地域の識別子
+     * カウントダウンを開始する
      */
-    public func setDeadlineCountDown(hourAhead: Int,
-                                     minuteAhead: Int,
-                                     secondAhead: Int,
-                                     countDownMode: CountDownMode,
-                                     style: TimeStyle,
-                                     identifier: String) {
-        if self.countDownStatus != .stopped {
+    public func startCountDown() {
+        // 期日が過去の日時だった場合、カウントダウンさせない
+        if self.isSettedPast(date: self.deadline) {
+            self.initialRemainingTime = 0
             return
         }
         
-        self.commonInit()
-        
-        self.countDownMode = countDownMode
-        
-        let MINUTE_MAX: Int = 60
-        let SECOND_MAX: Int = 60
-        var addTime: Int = hourAhead * MINUTE_MAX * SECOND_MAX
-        addTime += minuteAhead * SECOND_MAX
-        addTime += secondAhead
-        
-        // Stringに変換した日付を使って期限設定
-        let deadlineTemp = Date(timeInterval: TimeInterval(addTime),
-                                since: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"))
-        self.startCountDown(startDate: SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP"),
-                            deadline: deadlineTemp,
-                            style: style,
-                            identifier: identifier)
+        if self.countDownStatus == .playing {
+            self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
+                                              target: self,
+                                              selector: #selector(updateRemainingTime),
+                                              userInfo: nil,
+                                              repeats: true)
+        } else {
+            self.milliSecond = self.initialRemainingTime
+        }
     }
     
     /**
@@ -239,7 +230,7 @@ open class SKCountDownLabel: UILabel {
             self.timer?.invalidate()
             self.countDownStatus = .stopped
             self.milliSecond = self.initialRemainingTime
-            self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: "ja_JP")
+            self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: self.dateLocation)
             self.deadline = self.startDate.addingTimeInterval(self.initialRemainingTime)
             self.updateTimeDisplay()
         }
@@ -301,38 +292,6 @@ open class SKCountDownLabel: UILabel {
     }
     
     /**
-     * 期日を設定してカウントダウンを開始する
-     *
-     * - Parameters:
-     *   - deadline:    期日
-     *   - style:       時間の表示スタイル
-     *   - identifier:  地域の識別子
-     */
-    fileprivate func startCountDown(startDate: Date,
-                                    deadline: Date,
-                                    style: TimeStyle,
-                                    identifier: String) {
-        self.startDate = SKDateFormat.createDateTime(date: startDate, identifier: identifier)
-        self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
-        self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
-        // 期日が過去の日時だった場合、カウントダウンさせない
-        if self.isSettedPast(date: self.deadline) {
-            self.initialRemainingTime = 0
-            return
-        }
-        self.timeStyle = style
-        if self.countDownStatus == .playing {
-            self.timer = Timer.scheduledTimer(timeInterval: UPDATE_DEADLINE_TIME_INTERVAL,
-                                              target: self,
-                                              selector: #selector(updateRemainingTime),
-                                              userInfo: nil,
-                                              repeats: true)
-        } else {
-            self.milliSecond = self.initialRemainingTime
-        }
-    }
-    
-    /**
      * 指定した日時が過去かどうか
      *
      * - Parameters:
@@ -387,9 +346,9 @@ open class SKCountDownLabel: UILabel {
     fileprivate func changeTimeStyle() -> String {
         // 今から期日までの年数などを取得
         let toDate: Date = SKDateFormat.createDateTime(date: self.deadline,
-                                                       identifier: "ja_JP")
+                                                       identifier: self.dateLocation)
         let fromDate: Date = SKDateFormat.createDateTime(date: toDate.addingTimeInterval(-self.milliSecond),
-                                                         identifier: "ja_JP")
+                                                         identifier: self.dateLocation)
         
         let components: DateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond],
                                                                          from: fromDate,
