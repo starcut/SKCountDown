@@ -52,6 +52,7 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
                                              status: .playing)
         modelArray.append(model1)
         modelArray.append(model2)
+        modelArray.append(SKCountDownModel())
         
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
@@ -82,8 +83,32 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     }
     
     @IBAction fileprivate func start() {
-        self.performSegue(withIdentifier: "count",
-                          sender: nil)
+        let start: Date = SKDateFormat.createDateTime(date: Date(), identifier: "ja_JP")
+        if self.segmentControl?.selectedSegmentIndex == 0 {
+            let milliSecond: TimeInterval = self.datePicker?.date.timeIntervalSince(start) ?? 0
+            let model: SKCountDownModel = .init(id: 2,
+                                                title: "test",
+                                                deadline: start.addingTimeInterval(TimeInterval(milliSecond)),
+                                                milliSecond: milliSecond,
+                                                initialMilliSecond: milliSecond,
+                                                style: .full,
+                                                mode: .timerMode,
+                                                status: .playing)
+            self.performSegue(withIdentifier: "count",
+                              sender: model)
+        } else if self.segmentControl?.selectedSegmentIndex == 1 {
+            let milliSecond: Int = self.selectedHour*MINUTE_MAX*SECOND_MAX + self.selectedMinute*SECOND_MAX + self.selectedSecond
+            let model: SKCountDownModel = .init(id: 2,
+                                                title: "test",
+                                                deadline: start.addingTimeInterval(TimeInterval(milliSecond)),
+                                                milliSecond: Double(milliSecond),
+                                                initialMilliSecond:Double(milliSecond),
+                                                style: .full,
+                                                mode: .timerMode,
+                                                status: .playing)
+            self.performSegue(withIdentifier: "count",
+                              sender: model)
+        }
     }
     
     @IBAction fileprivate func changeMode(segmentControl: UISegmentedControl) {
