@@ -11,18 +11,14 @@ import SKCountDown
 import AudioToolbox
 
 class ViewController: UIViewController {
-    fileprivate var selectedHour: Int = 0
-    fileprivate var selectedMinute: Int = 0
-    fileprivate var selectedSecond: Int = 0
-    
     fileprivate let dateLocation: String = "ja_JP"
     
     public var id: Int = 0
     public var mode: Int = 0
-    public var startDate: Date = Date()
     public var deadline: Date = Date()
     public var status: CountDownStatus = .stopped
-    public var initialRemainingTime: Double = .zero
+    public var milliSecond: Double = .zero
+    public var initialMilliSecond: Double = .zero
     
     @IBOutlet fileprivate weak var countDownLabel: SKCountDownLabel!
     @IBOutlet fileprivate weak var rateLabel: UILabel!
@@ -49,8 +45,13 @@ class ViewController: UIViewController {
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
         }
         
-        self.countDownLabel.setDeadlineDate(startDate: self.startDate,
-                                            deadline: self.deadline,
+        if self.status == .pause {
+            self.deadline = Date().addingTimeInterval(self.milliSecond)
+        }
+        
+        self.countDownLabel.setDeadlineDate(deadline: self.deadline,
+                                            milliSecond: self.milliSecond,
+                                            initialMilliSecond: self.initialMilliSecond,
                                             countDownMode: CountDownMode(rawValue: UInt(mode)) ?? .timerMode,
                                             countDownStatus: self.status,
                                             style: .full,
@@ -58,14 +59,15 @@ class ViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        modelArray[id].end = self.deadline
-        modelArray[id].remainingTime = self.countDownLabel.getRemainingTime()
-        modelArray[id].isStopped = self.countDownLabel.getCountDownStatus()
+        modelArray[id].milliSecond = self.countDownLabel.getMilliSecond()
+        modelArray[id].initialMilliSecond = self.initialMilliSecond
+        modelArray[id].end = Date().addingTimeInterval(self.countDownLabel.getMilliSecond())
+        modelArray[id].status = self.countDownLabel.getCountDownStatus()
     }
     
     @IBAction fileprivate func switchMovingTimer() {
         // タイマーがスタートしていない場合は一時停止ボタンは動作させない
-        if self.countDownLabel.getRemainingTime() <= 0 {
+        if self.countDownLabel.getMilliSecond() <= 0 {
             return
         }
         

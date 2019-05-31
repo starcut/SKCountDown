@@ -97,7 +97,7 @@ open class SKCountDownLabel: UILabel {
     /** 期日 */
     fileprivate var deadline: Date = .init()
     /** 初期状態の残り時間 */
-    fileprivate var initialRemainingTime: Double = 0
+    fileprivate var initialMilliSecond: Double = 0
     /** タイマー */
     fileprivate var timer: Timer?
     /** 残り時間 */
@@ -133,8 +133,9 @@ open class SKCountDownLabel: UILabel {
      *   - style:           時間の表示スタイル
      *   - identifier:      地域の識別子
      */
-    public func setDeadlineDate(startDate: Date,
-                                deadline: Date,
+    public func setDeadlineDate(deadline: Date,
+                                milliSecond: Double,
+                                initialMilliSecond: Double,
                                 countDownMode: CountDownMode,
                                 countDownStatus: CountDownStatus,
                                 style: TimeStyle,
@@ -145,18 +146,21 @@ open class SKCountDownLabel: UILabel {
         
         self.commonInit()
         
-        self.startDate = SKDateFormat.createDateTime(date: startDate, identifier: identifier)
-        self.deadline = SKDateFormat.createDateTime(date: deadline, identifier: identifier)
+        let start: Date = SKDateFormat.createDateTime(date: Date(), identifier: identifier)
+        self.deadline = deadline
         self.countDownMode = countDownMode
         self.countDownStatus = countDownStatus
         self.timeStyle = style
-        switch self.countDownMode {
-        case .deadlineMode:
-            self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
-        case .timerMode:
-            self.initialRemainingTime = self.deadline.timeIntervalSince(self.startDate)
+        if initialMilliSecond == .zero {
+            self.initialMilliSecond = self.deadline.timeIntervalSince(start)
+        } else {
+            self.initialMilliSecond = initialMilliSecond
         }
-        
+        if self.countDownStatus == .playing {
+            self.milliSecond = self.deadline.timeIntervalSince(Date())
+        } else {
+            self.milliSecond = milliSecond
+        }
         // Stringに変換した日付を使って期限設定
         self.startCountDown()
     }
@@ -167,7 +171,7 @@ open class SKCountDownLabel: UILabel {
     public func startCountDown() {
         // 期日が過去の日時だった場合、カウントダウンさせない
         if self.isSettedPast(date: self.deadline) {
-            self.initialRemainingTime = 0
+            self.initialMilliSecond = 0
             return
         }
         
@@ -177,8 +181,6 @@ open class SKCountDownLabel: UILabel {
                                               selector: #selector(updateRemainingTime),
                                               userInfo: nil,
                                               repeats: true)
-        } else {
-            self.milliSecond = self.initialRemainingTime
         }
     }
     
@@ -229,9 +231,9 @@ open class SKCountDownLabel: UILabel {
         case .timerMode:
             self.timer?.invalidate()
             self.countDownStatus = .stopped
-            self.milliSecond = self.initialRemainingTime
+            self.milliSecond = self.initialMilliSecond
             self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: self.dateLocation)
-            self.deadline = self.startDate.addingTimeInterval(self.initialRemainingTime)
+            self.deadline = self.startDate.addingTimeInterval(self.initialMilliSecond)
             self.updateTimeDisplay()
         }
         
@@ -241,7 +243,7 @@ open class SKCountDownLabel: UILabel {
      * 残り時間を取得する
      * - Returns:   残り時間（単位は秒）
      */
-    public func getRemainingTime() -> Double {
+    public func getMilliSecond() -> Double {
         return self.milliSecond
     }
     
@@ -259,7 +261,7 @@ open class SKCountDownLabel: UILabel {
      * - Returns:   残り時間の割合[％]
      */
     public func getProgressRate() -> Double {
-        return (1 - (self.milliSecond / self.initialRemainingTime)) * 100
+        return (1 - (self.milliSecond / self.initialMilliSecond)) * 100
     }
     
     // -------------------------------------------------------
@@ -271,6 +273,7 @@ open class SKCountDownLabel: UILabel {
     fileprivate func commonInit() {
         self.countDownStatus = .stopped
         
+        self.initialMilliSecond = .zero
         self.milliSecond = .zero
         self.deadline = .init()
         
@@ -278,7 +281,7 @@ open class SKCountDownLabel: UILabel {
         
         self.timer?.invalidate()
         
-        self.processInUpdatingTimer = nil
+        //self.processInUpdatingTimer = nil
         self.processInNearDeadline = {
             self.textColor = .red
             AudioServicesPlaySystemSound(1102)
@@ -316,7 +319,8 @@ open class SKCountDownLabel: UILabel {
     fileprivate func updateTimeDisplay() {
         // 期日がきた場合はタイマーを止め、時間切れの表示をし処理を終える
         if self.milliSecond < 0 {
-            self.milliSecond = 0
+            self.milliSecond = .zero
+            self.initialMilliSecond = .zero
             self.switchMovingTimer(completion: {_ in })
             self.text = self.timeupString
             self.processInDeadline?()

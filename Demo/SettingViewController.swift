@@ -11,11 +11,10 @@ import UIKit
 open class modelClass: NSObject {
     var id: Int = 0
     var text: String = ""
-    var start: Date = Date()
     var end: Date = Date()
-    var remainingTime: Double = .zero
-    var initialRemainingTime: Double = .zero
-    var isStopped: CountDownStatus = .playing
+    var milliSecond: Double = .zero
+    var initialMilliSecond: Double = .zero
+    var status: CountDownStatus = .playing
     
     override init() {
         super.init()
@@ -23,18 +22,16 @@ open class modelClass: NSObject {
     
     init(id: Int,
          text: String,
-         start: Date,
          end:Date,
-         remainingTime: Double,
-         initialRemainingTime: Double,
-         isStopped: CountDownStatus) {
+         milliSecond: Double,
+         initialMilliSecond: Double,
+         status: CountDownStatus) {
         self.id = id
         self.text = text
-        self.start = start
         self.end = end
-        self.remainingTime = remainingTime
-        self.initialRemainingTime = initialRemainingTime
-        self.isStopped = isStopped
+        self.milliSecond = milliSecond
+        self.initialMilliSecond = initialMilliSecond
+        self.status = status
         
         super.init()
     }
@@ -66,19 +63,17 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         let text1: String = "04:08:30"
         let model1: modelClass = .init(id: 0,
                                        text: text1,
-                                       start: start,
                                        end: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text1)),
-                                       remainingTime: .zero,
-                                       initialRemainingTime: UtilTime.transformStringToSecond(timeString: text1),
-                                       isStopped: .playing)
+                                       milliSecond: UtilTime.transformStringToSecond(timeString: text1),
+                                       initialMilliSecond: UtilTime.transformStringToSecond(timeString: text1),
+                                       status: .pause)
         let text2: String = "00:05:30"
         let model2: modelClass = .init(id: 1,
                                        text: text2,
-                                       start: start,
                                        end: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text2)),
-                                       remainingTime: .zero,
-                                       initialRemainingTime: UtilTime.transformStringToSecond(timeString: text2),
-                                       isStopped: .playing)
+                                       milliSecond: UtilTime.transformStringToSecond(timeString: text2),
+                                       initialMilliSecond: UtilTime.transformStringToSecond(timeString: text2),
+                                       status: .pause)
         modelArray.append(model1)
         modelArray.append(model2)
         
@@ -107,15 +102,10 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
             let viewController: ViewController = segue.destination as! ViewController
             let model: modelClass = sender as! modelClass
             viewController.id = model.id
-            viewController.startDate = SKDateFormat.createDateTime(date: Date(),
-                                                                   identifier: "ja_JP")
-            if model.isStopped == .playing {
-                viewController.deadline = model.end
-            } else {
-                viewController.deadline = viewController.startDate.addingTimeInterval(model.remainingTime)
-            }
-            viewController.status = model.isStopped
-            viewController.initialRemainingTime = model.initialRemainingTime
+            viewController.deadline = model.end
+            viewController.status = model.status
+            viewController.milliSecond = model.milliSecond
+            viewController.initialMilliSecond = model.initialMilliSecond
             viewController.mode = 1
         }
     }
