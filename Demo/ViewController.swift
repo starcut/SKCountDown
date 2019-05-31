@@ -13,8 +13,8 @@ import AudioToolbox
 class ViewController: UIViewController {
     fileprivate let dateLocation: String = "ja_JP"
     
-    public var id: Int = 0
-    public var mode: Int = 0
+    public var id: Int = .zero
+    public var mode: Int = .zero
     public var deadline: Date = Date()
     public var status: CountDownStatus = .stopped
     public var milliSecond: Double = .zero

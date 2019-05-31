@@ -52,7 +52,7 @@ open class SKCountDownLabel: UILabel {
     /** 期日が来た時に表示する文字列 */
     open var timeupString: String = "時間切れ"
     /** 期日が近いと判定される残り時間 */
-    open var nearDeadlineTime: Double = 0
+    open var nearDeadlineTime: Double = .zero
     /** タイマーを更新する時に行う処理 */
     open var processInUpdatingTimer:(() -> Void)?
     /** 残り時間が指定した時間を下回った場合に一度だけ行う処理 */
@@ -93,9 +93,9 @@ open class SKCountDownLabel: UILabel {
     /** タイマーが止まっているかどうか */
     fileprivate(set) var countDownStatus: CountDownStatus = .stopped
     /** 開始日時 */
-    fileprivate var startDate: Date = .init()
+    fileprivate var startDate: Date = Date()
     /** 期日 */
-    fileprivate var deadline: Date = .init()
+    fileprivate var deadline: Date = Date()
     /** 初期状態の残り時間 */
     fileprivate var initialMilliSecond: Double = 0
     /** タイマー */
@@ -232,8 +232,8 @@ open class SKCountDownLabel: UILabel {
             self.timer?.invalidate()
             self.countDownStatus = .stopped
             self.milliSecond = self.initialMilliSecond
-            self.startDate = SKDateFormat.createDateTime(date: .init(), identifier: self.dateLocation)
-            self.deadline = self.startDate.addingTimeInterval(self.initialMilliSecond)
+            let startDate: Date = SKDateFormat.createDateTime(date: Date(), identifier: self.dateLocation)
+            self.deadline = startDate.addingTimeInterval(self.initialMilliSecond)
             self.updateTimeDisplay()
         }
         
@@ -264,6 +264,10 @@ open class SKCountDownLabel: UILabel {
         return (1 - (self.milliSecond / self.initialMilliSecond)) * 100
     }
     
+    public func saveCurrentStateOfTimer() {
+        
+    }
+    
     // -------------------------------------------------------
     // MARK: File Private Method
     // -------------------------------------------------------
@@ -275,19 +279,22 @@ open class SKCountDownLabel: UILabel {
         
         self.initialMilliSecond = .zero
         self.milliSecond = .zero
-        self.deadline = .init()
+        self.deadline = Date()
         
         self.text = self.changeTimeStyle()
         
         self.timer?.invalidate()
         
-        //self.processInUpdatingTimer = nil
-        self.processInNearDeadline = {
-            self.textColor = .red
-            AudioServicesPlaySystemSound(1102)
+        if self.processInNearDeadline == nil {
+            self.processInNearDeadline = {
+                self.textColor = .red
+                AudioServicesPlaySystemSound(1102)
+            }
         }
-        self.processInDeadline = {
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        if self.processInDeadline == nil {
+            self.processInDeadline = {
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            }
         }
         
         self.adjustsFontSizeToFitWidth = true
@@ -302,8 +309,8 @@ open class SKCountDownLabel: UILabel {
      * - Returns:   過去の日付かどうか
      */
     fileprivate func isSettedPast(date: Date) -> Bool {
-        return self.deadline.compare(.init()) == .orderedAscending ||
-               self.deadline.compare(.init()) == .orderedSame
+        return self.deadline.compare(Date()) == .orderedAscending ||
+               self.deadline.compare(Date()) == .orderedSame
     }
     
     /**
@@ -328,7 +335,7 @@ open class SKCountDownLabel: UILabel {
         }
         // タイマーが動いていない場合、時間の表示形式だけ変更して処理を中断する
         if self.isSettedPast(date: self.deadline) {
-            self.deadline = .init()
+            self.deadline = Date()
             self.text = self.changeTimeStyle()
             return
         }
