@@ -43,6 +43,7 @@ fileprivate enum ErrorText: String {
 }
 
 open class SKCountDownLabel: UILabel {
+    open var title: String?
     /** 時間の表示形式 */
     open var timeStyle: TimeStyle = .defaultStyle {
         didSet {
@@ -92,8 +93,6 @@ open class SKCountDownLabel: UILabel {
     fileprivate let UPDATE_DEADLINE_TIME_INTERVAL: TimeInterval = 0.001
     /** タイマーが止まっているかどうか */
     fileprivate(set) var countDownStatus: CountDownStatus = .stopped
-    /** 開始日時 */
-    fileprivate var startDate: Date = Date()
     /** 期日 */
     fileprivate var deadline: Date = Date()
     /** 初期状態の残り時間 */
@@ -129,16 +128,11 @@ open class SKCountDownLabel: UILabel {
      * 日時指定形式での期日設定
      *
      * - Parameters:
-     *   - selectedDate:    期日の文字列
+     *   - countDownModel:  タイマーの期日などを格納したオブジェクト
      *   - style:           時間の表示スタイル
      *   - identifier:      地域の識別子
      */
-    public func setDeadlineDate(deadline: Date,
-                                milliSecond: Double,
-                                initialMilliSecond: Double,
-                                countDownMode: CountDownMode,
-                                countDownStatus: CountDownStatus,
-                                style: TimeStyle,
+    public func setDeadlineDate(countDownModel: SKCountDownModel,
                                 identifier: String) {
         if self.countDownStatus != .stopped {
             return
@@ -146,20 +140,28 @@ open class SKCountDownLabel: UILabel {
         
         self.commonInit()
         
+        self.title = countDownModel.title
         let start: Date = SKDateFormat.createDateTime(date: Date(), identifier: identifier)
-        self.deadline = deadline
-        self.countDownMode = countDownMode
-        self.countDownStatus = countDownStatus
-        self.timeStyle = style
-        if initialMilliSecond == .zero {
+        self.deadline = countDownModel.deadline
+        self.countDownMode = countDownModel.mode
+        self.timeStyle = countDownModel.style
+        
+        if self.countDownMode == .deadlineMode {
+            self.countDownStatus = .playing
+        } else {
+            self.countDownStatus = countDownModel.status
+        }
+        
+        if countDownModel.initialMilliSecond == .zero {
             self.initialMilliSecond = self.deadline.timeIntervalSince(start)
         } else {
-            self.initialMilliSecond = initialMilliSecond
+            self.initialMilliSecond = countDownModel.initialMilliSecond
         }
+        
         if self.countDownStatus == .playing {
             self.milliSecond = self.deadline.timeIntervalSince(Date())
         } else {
-            self.milliSecond = milliSecond
+            self.milliSecond = countDownModel.milliSecond
         }
         // Stringに変換した日付を使って期限設定
         self.startCountDown()
@@ -171,7 +173,7 @@ open class SKCountDownLabel: UILabel {
     public func startCountDown() {
         // 期日が過去の日時だった場合、カウントダウンさせない
         if self.isSettedPast(date: self.deadline) {
-            self.initialMilliSecond = 0
+            self.initialMilliSecond = .zero
             return
         }
         
@@ -189,7 +191,7 @@ open class SKCountDownLabel: UILabel {
      * ただし、日付指定のカウントダウンの場合はこのメソッドは無効
      *
      * - Parameters:
-     *   - isStopedTimer:   タイマーが止まっているかどうか
+     *   - completion:  一時停止／再開を切り替えた後、呼び出し元で行う処理
      */
     public func switchMovingTimer(completion:(CountDownStatus) -> ()) {
         // 残り時間が0、つまりタイマーをセットしていない場合は一時停止の切り替えさせない
@@ -197,7 +199,7 @@ open class SKCountDownLabel: UILabel {
             self.timer?.invalidate()
             return
         }
-        
+
         // タイマーモードでない場合は一時停止させない
         if self.countDownMode != .timerMode {
             return
@@ -229,6 +231,8 @@ open class SKCountDownLabel: UILabel {
         case .deadlineMode:
             self.commonInit()
         case .timerMode:
+            self.adjustsFontSizeToFitWidth = true
+            self.textColor = .black
             self.timer?.invalidate()
             self.countDownStatus = .stopped
             self.milliSecond = self.initialMilliSecond
@@ -236,11 +240,11 @@ open class SKCountDownLabel: UILabel {
             self.deadline = startDate.addingTimeInterval(self.initialMilliSecond)
             self.updateTimeDisplay()
         }
-        
     }
     
     /**
      * 残り時間を取得する
+     *
      * - Returns:   残り時間（単位は秒）
      */
     public func getMilliSecond() -> Double {
@@ -248,7 +252,8 @@ open class SKCountDownLabel: UILabel {
     }
     
     /**
-     * 現在タイマーのタイマーの動作状態を取得する
+     * タイマーの動作状態を取得する
+     *
      * - Returns:   タイマーが止まっているかどうか
      */
     public func getCountDownStatus() -> CountDownStatus {
@@ -264,8 +269,22 @@ open class SKCountDownLabel: UILabel {
         return (1 - (self.milliSecond / self.initialMilliSecond)) * 100
     }
     
-    public func saveCurrentStateOfTimer() {
-        
+    /**
+     * 現在の表示状態を取得する
+     *
+     * - Parameters:
+     *   - id:      タイマーのID
+     * - Returns:   期日や残り時間など、現在のあタイマーの状態
+     */
+    public func getCurrentStateOfTimer(id: Int) -> SKCountDownModel {
+        return .init(id: id,
+                     title: self.title ?? "",
+                     deadline: Date().addingTimeInterval(self.milliSecond),
+                     milliSecond: self.milliSecond,
+                     initialMilliSecond: self.initialMilliSecond,
+                     style: self.timeStyle,
+                     mode: self.countDownMode,
+                     status: self.countDownStatus)
     }
     
     // -------------------------------------------------------
@@ -275,11 +294,10 @@ open class SKCountDownLabel: UILabel {
      * 共通の初期化事項
      */
     fileprivate func commonInit() {
-        self.countDownStatus = .stopped
-        
         self.initialMilliSecond = .zero
         self.milliSecond = .zero
         self.deadline = Date()
+        self.countDownStatus = .stopped
         
         self.text = self.changeTimeStyle()
         
@@ -327,7 +345,6 @@ open class SKCountDownLabel: UILabel {
         // 期日がきた場合はタイマーを止め、時間切れの表示をし処理を終える
         if self.milliSecond < 0 {
             self.milliSecond = .zero
-            self.initialMilliSecond = .zero
             self.switchMovingTimer(completion: {_ in })
             self.text = self.timeupString
             self.processInDeadline?()

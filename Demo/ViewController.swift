@@ -13,12 +13,7 @@ import AudioToolbox
 class ViewController: UIViewController {
     fileprivate let dateLocation: String = "ja_JP"
     
-    public var id: Int = .zero
-    public var mode: Int = .zero
-    public var deadline: Date = Date()
-    public var status: CountDownStatus = .stopped
-    public var milliSecond: Double = .zero
-    public var initialMilliSecond: Double = .zero
+    public var countDownModel: SKCountDownModel = SKCountDownModel()
     
     @IBOutlet fileprivate weak var countDownLabel: SKCountDownLabel!
     @IBOutlet fileprivate weak var rateLabel: UILabel!
@@ -45,24 +40,16 @@ class ViewController: UIViewController {
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
         }
         
-        if self.status == .pause {
-            self.deadline = Date().addingTimeInterval(self.milliSecond)
+        if self.countDownModel.status == .pause {
+            self.countDownModel.deadline = Date().addingTimeInterval(self.countDownModel.milliSecond)
         }
         
-        self.countDownLabel.setDeadlineDate(deadline: self.deadline,
-                                            milliSecond: self.milliSecond,
-                                            initialMilliSecond: self.initialMilliSecond,
-                                            countDownMode: CountDownMode(rawValue: UInt(mode)) ?? .timerMode,
-                                            countDownStatus: self.status,
-                                            style: .full,
+        self.countDownLabel.setDeadlineDate(countDownModel: self.countDownModel,
                                             identifier: self.dateLocation)
     }
-    
+     
     override func viewWillDisappear(_ animated: Bool) {
-        modelArray[id].milliSecond = self.countDownLabel.getMilliSecond()
-        modelArray[id].initialMilliSecond = self.initialMilliSecond
-        modelArray[id].end = Date().addingTimeInterval(self.countDownLabel.getMilliSecond())
-        modelArray[id].status = self.countDownLabel.getCountDownStatus()
+        modelArray[self.countDownModel.id] = self.countDownLabel.getCurrentStateOfTimer(id: self.countDownModel.id)
     }
     
     @IBAction fileprivate func switchMovingTimer() {

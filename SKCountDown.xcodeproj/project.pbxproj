@@ -20,6 +20,8 @@
 		7CA8A54D229CCBAF0073EBD4 /* UtilTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8A54C229CCBAF0073EBD4 /* UtilTime.swift */; };
 		7CA8A54E229CCBAF0073EBD4 /* UtilTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8A54C229CCBAF0073EBD4 /* UtilTime.swift */; };
 		7CAAE5EE229BACF900DAA23D /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAAE5ED229BACF900DAA23D /* SettingViewController.swift */; };
+		7CBE84D022A0D5FF00AAF28B /* SKCountDownModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE84CF22A0D5FF00AAF28B /* SKCountDownModel.swift */; };
+		7CBE84D122A0D64000AAF28B /* SKCountDownModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBE84CF22A0D5FF00AAF28B /* SKCountDownModel.swift */; };
 		7CEFD6342283B1FD002FF27A /* SKDateFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A22222271A5110042B3FF /* SKDateFormat.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +40,7 @@
 		7C3A22222271A5110042B3FF /* SKDateFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKDateFormat.swift; sourceTree = "<group>"; };
 		7CA8A54C229CCBAF0073EBD4 /* UtilTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilTime.swift; sourceTree = "<group>"; };
 		7CAAE5ED229BACF900DAA23D /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		7CBE84CF22A0D5FF00AAF28B /* SKCountDownModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKCountDownModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,7 @@
 			children = (
 				7C3A22012271A26B0042B3FF /* SKCountDown.h */,
 				7C3A22022271A26B0042B3FF /* Info.plist */,
+				7CBE84CF22A0D5FF00AAF28B /* SKCountDownModel.swift */,
 				7C3A221F2271A2F30042B3FF /* SKCountDownLabel.swift */,
 				7C3A22222271A5110042B3FF /* SKDateFormat.swift */,
 				7CA8A54C229CCBAF0073EBD4 /* UtilTime.swift */,
@@ -95,11 +99,11 @@
 			children = (
 				7C3A220F2271A2860042B3FF /* AppDelegate.swift */,
 				7C3A22112271A2860042B3FF /* ViewController.swift */,
+				7CAAE5ED229BACF900DAA23D /* SettingViewController.swift */,
 				7C3A22132271A2860042B3FF /* Main.storyboard */,
 				7C3A22162271A2870042B3FF /* Assets.xcassets */,
 				7C3A22182271A2870042B3FF /* LaunchScreen.storyboard */,
 				7C3A221B2271A2870042B3FF /* Info.plist */,
-				7CAAE5ED229BACF900DAA23D /* SettingViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -224,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C3A22232271A5110042B3FF /* SKDateFormat.swift in Sources */,
+				7CBE84D122A0D64000AAF28B /* SKCountDownModel.swift in Sources */,
 				7CA8A54E229CCBAF0073EBD4 /* UtilTime.swift in Sources */,
 				7C3A22202271A2F40042B3FF /* SKCountDownLabel.swift in Sources */,
 			);
@@ -237,6 +242,7 @@
 				7C3A22122271A2860042B3FF /* ViewController.swift in Sources */,
 				7C3A22102271A2860042B3FF /* AppDelegate.swift in Sources */,
 				7CEFD6342283B1FD002FF27A /* SKDateFormat.swift in Sources */,
+				7CBE84D022A0D5FF00AAF28B /* SKCountDownModel.swift in Sources */,
 				7CA8A54D229CCBAF0073EBD4 /* UtilTime.swift in Sources */,
 				7C3A22212271A32A0042B3FF /* SKCountDownLabel.swift in Sources */,
 			);

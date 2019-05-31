@@ -7,37 +7,9 @@
 //
 
 import UIKit
+import SKCountDown
 
-open class modelClass: NSObject {
-    var id: Int = 0
-    var text: String = ""
-    var end: Date = Date()
-    var milliSecond: Double = .zero
-    var initialMilliSecond: Double = .zero
-    var status: CountDownStatus = .playing
-    
-    override init() {
-        super.init()
-    }
-    
-    init(id: Int,
-         text: String,
-         end:Date,
-         milliSecond: Double,
-         initialMilliSecond: Double,
-         status: CountDownStatus) {
-        self.id = id
-        self.text = text
-        self.end = end
-        self.milliSecond = milliSecond
-        self.initialMilliSecond = initialMilliSecond
-        self.status = status
-        
-        super.init()
-    }
-}
-
-var modelArray: [modelClass] = []
+var modelArray: [SKCountDownModel] = []
 
 class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource {
     fileprivate var timeItem: [[Int]] = [[],[],[]]
@@ -60,20 +32,24 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         
         let start: Date = SKDateFormat.createDateTime(date: Date(),
                                                       identifier: "ja_JP")
-        let text1: String = "04:08:30"
-        let model1: modelClass = .init(id: 0,
-                                       text: text1,
-                                       end: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text1)),
-                                       milliSecond: UtilTime.transformStringToSecond(timeString: text1),
-                                       initialMilliSecond: UtilTime.transformStringToSecond(timeString: text1),
-                                       status: .pause)
+        let text1: String = "00:00:10"
+        let model1: SKCountDownModel = .init(id: 0,
+                                             title: text1,
+                                             deadline: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text1)),
+                                             milliSecond: UtilTime.transformStringToSecond(timeString: text1),
+                                             initialMilliSecond: UtilTime.transformStringToSecond(timeString: text1),
+                                             style: .full,
+                                             mode: .timerMode,
+                                             status: .playing)
         let text2: String = "00:05:30"
-        let model2: modelClass = .init(id: 1,
-                                       text: text2,
-                                       end: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text2)),
-                                       milliSecond: UtilTime.transformStringToSecond(timeString: text2),
-                                       initialMilliSecond: UtilTime.transformStringToSecond(timeString: text2),
-                                       status: .pause)
+        let model2: SKCountDownModel = .init(id: 1,
+                                             title: text2,
+                                             deadline: start.addingTimeInterval(UtilTime.transformStringToSecond(timeString: text2)),
+                                             milliSecond: UtilTime.transformStringToSecond(timeString: text2),
+                                             initialMilliSecond: UtilTime.transformStringToSecond(timeString: text2),
+                                             style: .full,
+                                             mode: .timerMode,
+                                             status: .playing)
         modelArray.append(model1)
         modelArray.append(model2)
         
@@ -100,13 +76,8 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "count" {
             let viewController: ViewController = segue.destination as! ViewController
-            let model: modelClass = sender as! modelClass
-            viewController.id = model.id
-            viewController.deadline = model.end
-            viewController.status = model.status
-            viewController.milliSecond = model.milliSecond
-            viewController.initialMilliSecond = model.initialMilliSecond
-            viewController.mode = 1
+            let model: SKCountDownModel = sender as! SKCountDownModel
+            viewController.countDownModel = model
         }
     }
     
@@ -144,13 +115,10 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
         switch component {
         case 0:
             self.selectedHour = self.timeItem[component][row]
-            break
         case 1:
             self.selectedMinute = self.timeItem[component][row]
-            break
         case 2:
             self.selectedSecond = self.timeItem[component][row]
-            break
         default:
             break
         }
@@ -162,7 +130,7 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell()
-        cell.textLabel?.text = modelArray[indexPath.row].text
+        cell.textLabel?.text = modelArray[indexPath.row].title
         return cell
     }
     
