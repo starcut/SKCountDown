@@ -92,7 +92,7 @@ class SettingViewController: UIViewController, UIPickerViewDelegate, UIPickerVie
                                                 milliSecond: milliSecond,
                                                 initialMilliSecond: milliSecond,
                                                 style: .full,
-                                                mode: .timerMode,
+                                                mode: .deadlineMode,
                                                 status: .playing)
             self.performSegue(withIdentifier: "count",
                               sender: model)

@@ -227,10 +227,7 @@ open class SKCountDownLabel: UILabel {
      * タイマーをリセットする
      */
     public func resetTimer() {
-        switch self.countDownMode {
-        case .deadlineMode:
-            self.commonInit()
-        case .timerMode:
+        if self.countDownMode == .timerMode {
             self.adjustsFontSizeToFitWidth = true
             self.textColor = .black
             self.timer?.invalidate()
