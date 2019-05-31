@@ -9,14 +9,14 @@
 import UIKit
 
 open class SKCountDownModel: NSObject {
-    var id: Int = 0
-    var title: String = ""
-    var deadline: Date = Date()
-    var milliSecond: Double = .zero
-    var initialMilliSecond: Double = .zero
-    var style: TimeStyle = .full
-    var mode: CountDownMode = .timerMode
-    var status: CountDownStatus = .playing
+    open var id: Int = 0
+    open var title: String = ""
+    open var deadline: Date = Date()
+    open var milliSecond: Double = .zero
+    open var initialMilliSecond: Double = .zero
+    open var style: TimeStyle = .full
+    open var mode: CountDownMode = .timerMode
+    open var status: CountDownStatus = .playing
     
     override init() {
         super.init()
